@@ -1,1 +1,4 @@
-Sofas are for sitting on.
+Sofas are for [[sitting]] on.
+They are comfy 90% of the time.
+Or sometimes not.
+They are a type of [[furniture]].
