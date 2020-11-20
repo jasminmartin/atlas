@@ -1,5 +1,6 @@
 import java.io.File
 
+import scala.collection.View.Filter
 import scala.io.Source
 
 object TagIdentifier {

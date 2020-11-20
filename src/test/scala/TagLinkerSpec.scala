@@ -7,7 +7,16 @@ class TagLinkerSpec extends FixtureAnyWordSpec with Matchers {
   }
   "TagLinkerSpec" when {
     "Given a list of filetags" should {
-      "Link them" in { f => pending }
+      "Link documents with the same tags" in { f =>
+        val fileTags = List(
+          FileTags(FileMetaData("running.txt"), List(Tag("trainers"), Tag("protein"), Tag("sprint"))),
+          FileTags(FileMetaData("weightlifting.txt"), List(Tag("trainers"), Tag("protein"), Tag("strength"))),
+          FileTags(FileMetaData("swimming.txt"), List(Tag("goggles"), Tag("protein"), Tag("water"))))
+
+        TagLinker.linkdocsbytags(fileTags: List[FileTags]) should contain theSameElementsAs
+          List(TagLink(Tag("trainers"), List(FileMetaData("running.txt"), FileMetaData("weightlifting.txt"))),
+            TagLink(Tag("protein"), List(FileMetaData("running.txt"), FileMetaData("weightlifting.txt"), FileMetaData("swimming.txt"))))
+      }
     }
   }
 
