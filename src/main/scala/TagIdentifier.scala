@@ -10,7 +10,7 @@ object TagIdentifier {
     regex.findAllMatchIn(stringFile).map(x => Tag(x.toString)).toList
   }
 
-  def displayFileTags(files: List[File]): List[Map[FileMetaData, List[Tag]]] = {
-    files.map(x => Map(FileMetaData(x.getName) -> findTag(x)))
+  def displayFileTags(files: List[File]): List[FileTags] = {
+    files.map(x => FileTags(FileMetaData(x.getName), findTag(x)))
   }
 }

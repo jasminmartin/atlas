@@ -17,7 +17,7 @@ class TagIdentifierSpec extends FixtureAnyWordSpec with Matchers {
 
       "Associate the word in the '[[]]' tag to the document" in { f =>
         TagIdentifier.displayFileTags(List(f.sofaFile)) shouldEqual
-        List(Map(FileMetaData(f.sofaFile.getName) -> List(Tag("[[sitting]]"), Tag("[[furniture]]"))))
+          List(FileTags(FileMetaData("sofa.txt"),List(Tag("[[sitting]]"), Tag("[[furniture]]"))))
       }
     }
   }
