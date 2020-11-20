@@ -5,7 +5,7 @@ object LocalFileConsumer extends FileConsumer {
   override def listFiles(topLevelDirectory: String): Option[List[File]] = {
     val topLevelDir = new File(topLevelDirectory)
     topLevelDir match {
-      case topLevelDir if (topLevelDir.exists() && topLevelDir.isDirectory) => Some(recursiveFileFetch(topLevelDir))
+      case topLevelDir if topLevelDir.exists() && topLevelDir.isDirectory => Some(recursiveFileFetch(topLevelDir))
       case _ => None
     }
   }
@@ -17,6 +17,6 @@ object LocalFileConsumer extends FileConsumer {
   }
 
   override def filterFiles(fileList: List[File], extensions: List[String]): List[File] = {
-    fileList.filter(f => f.getName.endsWith(extensions))
+    fileList.filter(f => extensions.exists(x => f.getName.endsWith(x)))
   }
 }
