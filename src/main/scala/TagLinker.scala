@@ -1,19 +1,34 @@
-
+import scala.collection.mutable.ListBuffer
 
 object TagLinker {
-  def linkDocsByTags(fileTags: List[FileTags]): List[TagLink] = {
+  def linkDocsByTags(fileTags: List[FileTags]): Either[NoLinksFound, List[TagLink]]= {
     val distinctTags: List[Tag] = findDistinctTags(fileTags)
-
-    //for each unique tag, check if it is in a document
-    //if it is, create a TagLink
-    //Return all tag links
+    val allLinks = distinctTags.map(distinctTag => isTagPresent(distinctTag, fileTags))
+    println(identifyUniqueTagLinks(allLinks))
+    identifyUniqueTagLinks(allLinks)
   }
 
   def findDistinctTags(fileTags: List[FileTags]): List[Tag] = {
     fileTags.flatMap(x => x.tags.distinct)
   }
 
-  def isTagPresent(distinctTags: List[Tag], fileTags: List[FileTags]): List[TagLink] ={
-//    distinctTags.map(unique => fileTags.map(x => x.tags).)
+  def isTagPresent(distinctTag: Tag, fileTags: List[FileTags]): TagLink = {
+    val filesWithTag = new ListBuffer[FileMetaData]
+    fileTags.map(doc => doc.tags.map(tag => if (tag == distinctTag) {
+      filesWithTag += doc.fileMetaData
+    })
+    )
+    TagLink(distinctTag, filesWithTag.toList)
+  }
+
+  def identifyUniqueTagLinks(tagLink: List[TagLink]): Either[NoLinksFound, List[TagLink]] = {
+    val moreThanOneDocTagged = new ListBuffer[TagLink]
+    tagLink.map(doc => if (doc.files.length > 1) {
+      moreThanOneDocTagged += doc
+    })
+    moreThanOneDocTagged.toList.distinct match {
+      case Seq() => Left(NoLinksFound(tagLink.flatMap(tag => tag.files).distinct))
+      case x: List[TagLink] => Right(x)
+    }
   }
 }

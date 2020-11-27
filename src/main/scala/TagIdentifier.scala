@@ -6,11 +6,10 @@ object TagIdentifier {
   def findTag(file: File): List[Tag] = {
     val regex = """\[\[([^\[\]]+)\]\]""".r
     val stringFile: String = Source.fromFile(file).mkString
-    println("hi" + stringFile)
-    regex.findAllMatchIn(stringFile).map(x => Tag(x.toString)).toList
+    regex.findAllMatchIn(stringFile).map(tag => Tag(tag.toString)).toList
   }
 
   def displayFileTags(files: List[File]): List[FileTags] = {
-    files.map(x => FileTags(FileMetaData(x.getName), findTag(x)))
+    files.map(file => FileTags(FileMetaData(file.getName), findTag(file)))
   }
 }

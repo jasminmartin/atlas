@@ -4,8 +4,6 @@ import org.scalatest.Outcome
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
 
-import scala.Console.in
-
 class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
 
   markup {
