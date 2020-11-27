@@ -1,4 +1,8 @@
+package TagGeneration
+
 import java.io.File
+
+import CommonModels.{FileMetaData, FileTags, Tag}
 
 import scala.io.Source
 

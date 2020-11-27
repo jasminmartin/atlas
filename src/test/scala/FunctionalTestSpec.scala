@@ -1,5 +1,8 @@
 import java.io.File
 
+import CommonModels.{FileMetaData, FileTags, Tag, TagLink}
+import FileIngestion.LocalFileConsumer
+import TagGeneration.{TagIdentifier, TagLinker}
 import org.scalatest.Outcome
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
@@ -24,7 +27,6 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
         val filteredFiles: List[File] = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
         val fileTagList: List[FileTags] = TagIdentifier.displayFileTags(filteredFiles)
         TagLinker.linkDocsByTags(fileTagList) shouldEqual Right(List(TagLink(Tag("[[furniture]]"),List(FileMetaData("sofa.txt"), FileMetaData("chair.txt")))))
-
       }
     }
   }

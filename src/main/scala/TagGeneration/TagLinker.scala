@@ -1,7 +1,11 @@
+package TagGeneration
+
+import CommonModels.{FileMetaData, FileTags, NoLinksFound, Tag, TagLink}
+
 import scala.collection.mutable.ListBuffer
 
 object TagLinker {
-  def linkDocsByTags(fileTags: List[FileTags]): Either[NoLinksFound, List[TagLink]]= {
+  def linkDocsByTags(fileTags: List[FileTags]): Either[NoLinksFound, List[TagLink]] = {
     val distinctTags: List[Tag] = findDistinctTags(fileTags)
     val allLinks = distinctTags.map(distinctTag => isTagPresent(distinctTag, fileTags))
     println(identifyUniqueTagLinks(allLinks))

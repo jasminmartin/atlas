@@ -1,3 +1,5 @@
+package FileIngestion
+
 import java.io.File
 
 import org.scalatest.Outcome
@@ -7,10 +9,10 @@ import org.scalatest.wordspec.FixtureAnyWordSpec
 class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
 
   markup {
-    "FileConsumerSpec checks that the FileConsumer can list files from directories"
+    "FileIngestion.FileConsumerSpec checks that the FileIngestion.FileConsumer can list files from directories"
   }
 
-  "FileConsumer" when {
+  "FileIngestion.FileConsumer" when {
     "Given a flat file directory structure" should {
       "Return a list of the files it contains" in { f =>
         println("het" + LocalFileConsumer.listFiles(f.flatDirectoryStructure))

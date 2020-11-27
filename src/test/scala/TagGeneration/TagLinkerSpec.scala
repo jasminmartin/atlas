@@ -1,3 +1,6 @@
+package TagGeneration
+
+import CommonModels._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -7,7 +10,7 @@ class TagLinkerSpec extends AnyWordSpec with Matchers {
     "the tag linker spec links documents with the same tags"
   }
 
-  "TagLinkerSpec" when {
+  "TagGeneration.TagLinkerSpec" when {
 
     "Given a list of filetags" should {
       "Link documents with the same tags" in {
@@ -21,7 +24,7 @@ class TagLinkerSpec extends AnyWordSpec with Matchers {
             TagLink(Tag("protein"), List(FileMetaData("running.txt"), FileMetaData("weightlifting.txt"), FileMetaData("swimming.txt")))))
       }
 
-      "Return an NoLinksFound error if no links exist" in {
+      "Return an CommonModels.NoLinksFound error if no links exist" in {
         val fileTags = List(
           FileTags(FileMetaData("running.txt"), List(Tag("whistle"), Tag("protein"), Tag("sprint"))),
           FileTags(FileMetaData("weightlifting.txt"), List(Tag("strong"), Tag("shoes"), Tag("strength"))),

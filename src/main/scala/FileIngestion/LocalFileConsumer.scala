@@ -1,3 +1,5 @@
+package FileIngestion
+
 import java.io.File
 
 object LocalFileConsumer extends FileConsumer {
