@@ -17,9 +17,15 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
         val filteredFiles: List[File] = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
         val fileTagList: List[FileTags] = TagIdentifier.displayFileTags(filteredFiles)
         fileTagList should contain theSameElementsAs
-          List(FileTags(FileMetaData("dog.txt"),List()), FileTags(FileMetaData("cat.txt"),List()), FileTags(FileMetaData("sofa.txt"),List(Tag("[[sitting]]"), Tag("[[furniture]]"))), FileTags(FileMetaData("chair.txt"),List()), FileTags(FileMetaData("bathroom.txt"),List()))       }
+          List(FileTags(FileMetaData("dog.txt"),List()), FileTags(FileMetaData("cat.txt"),List()), FileTags(FileMetaData("sofa.txt"),List(Tag("[[sitting]]"), Tag("[[furniture]]"))), FileTags(FileMetaData("chair.txt"),List(Tag("[[furniture]]"))), FileTags(FileMetaData("bathroom.txt"),List()))       }
 
-      "Link documents by their tags" in { f => pending }
+      "Link documents by their tags" in { f =>
+        val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
+        val filteredFiles: List[File] = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
+        val fileTagList: List[FileTags] = TagIdentifier.displayFileTags(filteredFiles)
+        TagLinker.linkDocsByTags(fileTagList) shouldEqual Right(List(TagLink(Tag("[[furniture]]"),List(FileMetaData("sofa.txt"), FileMetaData("chair.txt")))))
+
+      }
     }
   }
 

@@ -1,1 +1,3 @@
 Chairs are for sitting on.
+They are a type of [[furniture]].
+
