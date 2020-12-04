@@ -8,26 +8,29 @@ import TagGeneration.{TagIdentifier, TagLinker}
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directives, Route}
 
+import scala.util.Success
+
 class RouteClient extends Directives {
+  import Directives._
+  import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
+  import io.circe.generic.auto._
 
   def route: Route =
     Route.seal(
-      path( "link") {
-        get {
-          complete(run())
+      path("link") {
+        TagLinker.linkDocsByTags(getLocalTags()) match {
+          case Right(c) => complete(c)
+          case Left(e)  => complete(StatusCodes.NotFound -> e)
         }
       }
     )
 
-  def run() = {
-    val allFiles: Option[List[File]] = LocalFileConsumer.listFiles("src/test/Resources")
-    val filteredFiles = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
-    val fileTagList = TagIdentifier.displayFileTags(filteredFiles)
-     TagLinker.linkDocsByTags(fileTagList) match {
-      //      case Right(c) => JsonParser.tagsToJson(tagList)
-      case Right(c) => StatusCodes.OK
-      case _ => StatusCodes.NotFound
-    }
+  def getLocalTags() = {
+    val allFiles: Option[List[File]] =
+      LocalFileConsumer.listFiles("src/test/Resources")
+    val filteredFiles =
+      LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
+    TagIdentifier.displayFileTags(filteredFiles)
   }
 }
 
@@ -35,4 +38,3 @@ object RouteClient {
   def apply(): RouteClient =
     new RouteClient
 }
-
