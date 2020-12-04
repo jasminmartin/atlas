@@ -12,15 +12,15 @@ class RouteClient extends Directives {
 
   def route: Route =
     Route.seal(
-      path("zettelkasten" / "link" / Segment) { directoryPath =>
+      path( "link") {
         get {
-          complete(run(directoryPath))
+          complete(run())
         }
       }
     )
 
-  def run(directoryPath: String) = {
-    val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(directoryPath)
+  def run() = {
+    val allFiles: Option[List[File]] = LocalFileConsumer.listFiles("src/test/Resources")
     val filteredFiles = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
     val fileTagList = TagIdentifier.displayFileTags(filteredFiles)
      TagLinker.linkDocsByTags(fileTagList) match {
