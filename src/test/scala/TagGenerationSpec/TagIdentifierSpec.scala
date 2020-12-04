@@ -1,8 +1,9 @@
-package TagGeneration
+package TagGenerationSpec
 
 import java.io.File
 
 import CommonModels.{FileMetaData, FileTags, Tag}
+import TagGeneration.TagIdentifier
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
 

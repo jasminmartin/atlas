@@ -1,7 +1,8 @@
-package FileIngestion
+package FileIngestionSpec
 
 import java.io.File
 
+import FileIngestion.LocalFileConsumer
 import org.scalatest.Outcome
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec

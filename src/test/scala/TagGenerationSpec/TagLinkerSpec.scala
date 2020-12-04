@@ -1,6 +1,7 @@
-package TagGeneration
+package TagGenerationSpec
 
 import CommonModels._
+import TagGeneration.TagLinker
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
