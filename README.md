@@ -24,9 +24,11 @@ Example Response:
 ]
 ```
 
-Run Server:
+Run Backend Server:
+`cd backend`
 `sbt run`
 
-Run Tests:
+Run Backend Tests:
+`cd backend`
 `sbt test`
 
