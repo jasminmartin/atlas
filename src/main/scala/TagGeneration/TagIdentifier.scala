@@ -16,6 +16,7 @@ object TagIdentifier {
   }
 
   def fileAndTags(files: List[File]): List[FileAndTags] = {
-    files.map(file => FileAndTags(FileMetaData(file.getName), tagsInFile(file)))
+    val allFileAndTags: List[FileAndTags] = files.map(file => FileAndTags(FileMetaData(file.getName), tagsInFile(file)))
+    allFileAndTags.sortWith(_.tags.length < _.tags.length)
   }
 }
