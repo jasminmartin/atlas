@@ -1,38 +1,37 @@
 package TagGeneration
 
-import CommonModels.{FileMetaData, FileTags, NoLinksFound, Tag, TagLink}
+import CommonModels._
 
 import scala.collection.mutable.ListBuffer
 
 object TagLinker {
-  def linkDocsByTags(fileTags: List[FileTags]): Either[NoLinksFound, List[TagLink]] = {
-    val distinctTags: List[Tag] = findDistinctTags(fileTags)
-    val allLinks = distinctTags.map(distinctTag => isTagPresent(distinctTag, fileTags))
-    println(identifyUniqueTagLinks(allLinks))
-    identifyUniqueTagLinks(allLinks)
+  def linkDocsByTags(fileAndTags: List[FileAndTags]): Either[NoLinksFound, List[TagAndFiles]] = {
+    val distinctTags: List[Tag] = allTagsInSystem(fileAndTags)
+    val tagsAndFiles: List[TagAndFiles] = distinctTags.map(distinctTag => isTagPresent(distinctTag, fileAndTags))
+    identifyUniqueTagLinks(tagsAndFiles)
   }
 
-  def findDistinctTags(fileTags: List[FileTags]): List[Tag] = {
+  def allTagsInSystem(fileTags: List[FileAndTags]): List[Tag] = {
     fileTags.flatMap(x => x.tags.distinct)
   }
 
-  def isTagPresent(distinctTag: Tag, fileTags: List[FileTags]): TagLink = {
-    val filesWithTag = new ListBuffer[FileMetaData]
+  def isTagPresent(distinctTag: Tag, fileTags: List[FileAndTags]): TagAndFiles = {
+    val filesLinkedToTag = new ListBuffer[FileMetaData]
     fileTags.map(doc => doc.tags.map(tag => if (tag == distinctTag) {
-      filesWithTag += doc.fileMetaData
+      filesLinkedToTag += doc.fileMetaData
     })
     )
-    TagLink(distinctTag, filesWithTag.toList)
+    TagAndFiles(distinctTag, filesLinkedToTag.toList)
   }
 
-  def identifyUniqueTagLinks(tagLink: List[TagLink]): Either[NoLinksFound, List[TagLink]] = {
-    val moreThanOneDocTagged = new ListBuffer[TagLink]
+  def identifyUniqueTagLinks(tagLink: List[TagAndFiles]): Either[NoLinksFound, List[TagAndFiles]] = {
+    val moreThanOneDocTagged = new ListBuffer[TagAndFiles]
     tagLink.map(doc => if (doc.files.length > 1) {
       moreThanOneDocTagged += doc
     })
     moreThanOneDocTagged.toList.distinct match {
-      case Seq() => Left(NoLinksFound(tagLink.flatMap(tag => tag.files).distinct))
-      case x: List[TagLink] => Right(x)
+      case List() => Left(NoLinksFound(tagLink.flatMap(tag => tag.files).distinct))
+      case linkedFiles: List[TagAndFiles] => Right(linkedFiles)
     }
   }
 }

@@ -2,7 +2,7 @@ package TagGenerationSpec
 
 import java.io.File
 
-import CommonModels.{FileMetaData, FileTags, Tag}
+import CommonModels.{FileAndTags, FileMetaData, Tag}
 import TagGeneration.TagIdentifier
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
@@ -10,18 +10,18 @@ import org.scalatest.wordspec.FixtureAnyWordSpec
 class TagIdentifierSpec extends FixtureAnyWordSpec with Matchers {
 
   markup {
-    "the tag identifier should be able to scan documents for tags which are identified by '[[]]"
+    "TagIdentifierSpec ensures the tag identifier scans documents for tags which are identified by '[[]]"
   }
 
-  "TagGeneration.TagIdentifierSpec" when {
+  "TagIdentifierSpec" when {
     "Given a single document" should {
       "Identify words in the '[[]]' tags" in { f =>
-        TagIdentifier.findTag(f.sofaFile) shouldEqual List(Tag("[[sitting]]"), Tag("[[furniture]]"))
+        TagIdentifier.tagsInFile(f.sofaFile) shouldEqual List(Tag("[[sitting]]"), Tag("[[furniture]]"))
       }
 
       "Associate the word in the '[[]]' tag to the document" in { f =>
-        TagIdentifier.displayFileTags(List(f.sofaFile)) shouldEqual
-          List(FileTags(FileMetaData("sofa.txt"),List(Tag("[[sitting]]"), Tag("[[furniture]]"))))
+        TagIdentifier.fileAndTags(List(f.sofaFile)) shouldEqual
+          List(FileAndTags(FileMetaData("sofa.txt"), List(Tag("[[sitting]]"), Tag("[[furniture]]"))))
       }
     }
   }

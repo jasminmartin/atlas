@@ -10,10 +10,10 @@ import org.scalatest.wordspec.FixtureAnyWordSpec
 class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
 
   markup {
-    "FileIngestion.FileConsumerSpec checks that the FileIngestion.FileConsumer can list files from directories"
+    "FileConsumerSpec checks that the FileConsumer can list files from directories"
   }
 
-  "FileIngestion.FileConsumer" when {
+  "FileConsumerSpec" when {
     "Given a flat file directory structure" should {
       "Return a list of the files it contains" in { f =>
         println("het" + LocalFileConsumer.listFiles(f.flatDirectoryStructure))
