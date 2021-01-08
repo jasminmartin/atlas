@@ -5,7 +5,7 @@ type CircleProps = {
     leftDelta: number,
     rightDelta: number,
     bottomDelta: number,
-    topDelta: number,
+    topDelta: number
 }
 
 const FileCircle = ({ fileName, leftDelta, rightDelta, bottomDelta, topDelta }: CircleProps) => (
