@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
 
-export default class FileCircle extends Component {
-    render() {
-        return (
-            <button style={circleStyle}>
-                <text>It's a circle!</text>
-            </button>
-        )
-    }
+type CircleProps = {
+    fileName: string
+
 }
+
+const FileCircle = ({ fileName }: CircleProps) => (
+    <button style={circleStyle}>
+        <text>{fileName}</text>
+    </button>
+)
+
+export default FileCircle;
 
 const circleStyle = {
     width: window.innerHeight * 0.5,
