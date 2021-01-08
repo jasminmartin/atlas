@@ -1,24 +1,30 @@
-import React, { Component } from 'react'
+import React, { Component, CSSProperties } from 'react'
 
 type CircleProps = {
-    fileName: string
-
+    fileName: string,
+    leftDelta: number,
+    rightDelta: number,
+    bottomDelta: number,
+    topDelta: number,
 }
 
-const FileCircle = ({ fileName }: CircleProps) => (
-    <button style={circleStyle}>
+const FileCircle = ({ fileName, leftDelta, rightDelta, bottomDelta, topDelta }: CircleProps) => (
+    <button style={circleStyle(leftDelta, rightDelta, bottomDelta, topDelta)}>
         <text>{fileName}</text>
     </button>
 )
 
 export default FileCircle;
 
-const circleStyle = {
+const circleStyle = (leftDelta: number, rightDelta: number, bottomDelta: number, topDelta: number) => ({
     width: window.innerHeight * 0.5,
     height: window.innerHeight * 0.5,
     borderRadius: window.innerWidth + window.innerHeight / 2,
     backgroundColor: "red",
-    justifyContent: 'center',
-    alignItems: 'center'
-};
+    position: "absolute",
+    left: leftDelta,
+    right: rightDelta,
+    bottom: bottomDelta,
+    top: topDelta
+}) as const;
 

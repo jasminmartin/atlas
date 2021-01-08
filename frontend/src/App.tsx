@@ -5,15 +5,12 @@ import FileCircle from './app/sections/FileCircle';
 
 function App() {
   return (
-    <div>
-      <FileCircle />
-      <FileCircle />
-      <FileCircle />
-      <FileCircle />
-      <FileCircle />
-      <FileCircle />
-      <FileCircle />
-      <FileCircle />
+    <div style={{ display: "flex" }}>
+      <FileCircle fileName="hi"
+        leftDelta={20}
+        rightDelta={40}
+        bottomDelta={39}
+        topDelta={30} />
     </div>
   );
 }
