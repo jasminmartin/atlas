@@ -1,32 +1,26 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import FileCircle from './app/sections/FileCircle';
-import LineConnection from './app/sections/LineConnection';
+import Graph from './app/sections/Graph';
 
-function App() {
-  return (
-    <div>
-      <FileCircle fileName="hi"
-        leftDelta={20}
-        rightDelta={40}
-        bottomDelta={39}
-        topDelta={30} />
+const NODES = [
+  { id: 'sofa', label: 'sofa', width: 144, height: 100 },
+  { id: 'chair', label: 'chair', width: 160, height: 100 },
+  { id: 'potato', label: 'potato', width: 108, height: 100 },
+  { id: 'furniture', label: 'furniture', width: 108, height: 100 },
+];
 
-      <LineConnection angle="10"
-        leftDelta={20}
-        rightDelta={40}
-        bottomDelta={39}
-        topDelta={30} />
+const EDGES = [
+  { from: 'sofa', to: 'potato' },
+  { from: 'chair', to: 'potato' },
+  { from: 'sofa', to: 'furniture' },
+  { from: 'chair', to: 'furniture' }
+];
 
-      <LineConnection angle="123"
-        leftDelta={48}
-        rightDelta={23}
-        bottomDelta={56}
-        topDelta={12} />
+interface AppProps { }
 
-    </div>
-  );
+function App({ }: AppProps) {
+  return <Graph nodes={NODES} edges={EDGES} />;
 }
 
 export default App;
