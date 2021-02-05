@@ -1,3 +1,3 @@
 package CommonModels
 
-case class NoLinksFound(documentsScanned: List[FileMetaData])
+//case class NoLinksFound(documentsScanned: List[FileMetaData])

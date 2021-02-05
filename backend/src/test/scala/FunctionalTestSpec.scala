@@ -1,8 +1,8 @@
 import java.io.File
 
-import CommonModels.{FileMetaData, FileAndTags, Tag, TagAndFiles}
+import CommonModels.{Edge, Node, NodePair}
 import FileIngestion.LocalFileConsumer
-import TagGeneration.{TagIdentifier, TagLinker}
+import TagGeneration.{EdgeIdentifier, NodeIdentifier}
 import org.scalatest.Outcome
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
@@ -15,18 +15,19 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
 
   "FunctionalTestSpec" when {
     "Given a directory" should {
-      "Return a list of documents and related tags" in { f =>
+      "Return a list of nodes" in { f =>
         val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
         val filteredFiles: List[File] = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
-        val fileTagList: List[FileAndTags] = TagIdentifier.fileAndTags(filteredFiles)
+        val fileTagList: List[Node] = NodeIdentifier.findAllFileNodes(filteredFiles)
         fileTagList should contain theSameElementsAs
-          List(FileAndTags(FileMetaData("dog.txt"),List()), FileAndTags(FileMetaData("cat.txt"),List()), FileAndTags(FileMetaData("sofa.txt"),List(Tag("[[sitting]]"), Tag("[[furniture]]"))), FileAndTags(FileMetaData("chair.txt"),List(Tag("[[furniture]]"))), FileAndTags(FileMetaData("bathroom.txt"),List()))       }
+          List(Node("dog.txt"), Node("cat.txt"), Node("sofa.txt"), Node("chair.txt"), Node("bathroom.txt"), Node("[[sitting]]"), Node("[[furniture]]"), Node("[[furniture]]"))
+      }
 
-      "Link documents by their tags" in { f =>
+      "Link nodes" in { f =>
         val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
         val filteredFiles: List[File] = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
-        val fileTagList: List[FileAndTags] = TagIdentifier.fileAndTags(filteredFiles)
-        TagLinker.linkDocsByTags(fileTagList) shouldEqual Right(List(TagAndFiles(Tag("[[furniture]]"),List(FileMetaData("chair.txt"), FileMetaData("sofa.txt")))))
+        val fileTagList: List[NodePair] = NodeIdentifier.createNodePairs(filteredFiles)
+        EdgeIdentifier.singleEdge(fileTagList) shouldEqual List(Edge(Node("sofa.txt"),"[[sitting]]"), Edge(Node("sofa.txt"),"[[furniture]]"), Edge(Node("chair.txt"),"[[furniture]]"))
       }
     }
   }
@@ -40,6 +41,5 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
       this.withFixture(test.toNoArgTest(FixtureParam(nestedDirectoryStructure: String)))
     }
   }
-
 }
 

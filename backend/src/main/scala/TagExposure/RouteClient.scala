@@ -2,9 +2,9 @@ package TagExposure
 
 import java.io.File
 
-import CommonModels.FileAndTags
+import CommonModels.NodePair
 import FileIngestion.LocalFileConsumer
-import TagGeneration.{TagIdentifier, TagLinker}
+import TagGeneration.{EdgeIdentifier, NodeIdentifier}
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directives, Route}
 
@@ -16,17 +16,17 @@ class RouteClient extends Directives {
   def route: Route =
     Route.seal(
       path("local-link") {
-        TagLinker.linkDocsByTags(getLocalTags) match {
-          case Right(taggedFiles) => complete(taggedFiles)
-          case Left(e) => complete(StatusCodes.NotFound -> e)
+        EdgeIdentifier.singleEdge(getLocalTags) match {
+          case (taggedFiles) => complete(taggedFiles)
+          case (e) => complete(StatusCodes.NotFound -> e)
         }
       }
     )
 
-  def getLocalTags: List[FileAndTags] = {
+  def getLocalTags: List[NodePair] = {
     val allLocalFiles: Option[List[File]] = LocalFileConsumer.listFiles("src/test/Resources")
     val filterFiles = LocalFileConsumer.filterFiles(allLocalFiles.get, List(".txt"))
-    TagIdentifier.fileAndTags(filterFiles)
+    NodeIdentifier.createNodePairs(filterFiles)
   }
 }
 
