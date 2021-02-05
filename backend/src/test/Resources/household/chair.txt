@@ -1,3 +1,2 @@
-Chairs are for sitting on [[potato]].
-They are a type [[carrot]] of [[furniture]].
-
+Chairs are for sitting on.
+They are a type of [[furniture]].
