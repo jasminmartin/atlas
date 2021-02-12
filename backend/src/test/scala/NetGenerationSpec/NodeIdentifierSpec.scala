@@ -1,4 +1,4 @@
-package NodeGenerationSpec
+package NetGenerationSpec
 
 import java.io.File
 
@@ -25,7 +25,7 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
 
       "Associate the tagged nodes '[[]]' to the file Node" in { f =>
         NodeIdentifier.createNodePairs(List(f.sofaFile)) shouldEqual
-          List(NodePair(Node("sofa.txt"), List(Node("[[sitting]]"), Node("[[furniture]]"))))
+          List(FileAndNodes(Node("sofa.txt"), List(Node("[[sitting]]"), Node("[[furniture]]"))))
       }
     }
   }

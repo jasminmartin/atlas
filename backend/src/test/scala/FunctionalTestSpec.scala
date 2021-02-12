@@ -1,6 +1,6 @@
 import java.io.File
 
-import CommonModels.{Edge, Node, NodePair}
+import CommonModels.{Edge, Node, FileAndNodes}
 import FileIngestion.LocalFileConsumer
 import TagGeneration.{EdgeIdentifier, NodeIdentifier}
 import org.scalatest.Outcome
@@ -26,7 +26,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
       "Link nodes" in { f =>
         val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
         val filteredFiles: List[File] = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
-        val fileTagList: List[NodePair] = NodeIdentifier.createNodePairs(filteredFiles)
+        val fileTagList: List[FileAndNodes] = NodeIdentifier.createNodePairs(filteredFiles)
         EdgeIdentifier.singleEdge(fileTagList) shouldEqual List(Edge(Node("sofa.txt"),"[[sitting]]"), Edge(Node("sofa.txt"),"[[furniture]]"), Edge(Node("chair.txt"),"[[furniture]]"))
       }
     }

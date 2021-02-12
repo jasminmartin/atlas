@@ -1,10 +1,8 @@
-package TagGenerationSpec
-
-import CommonModels.{Edge, Node, NodePair}
+package NetGenerationSpec
+import CommonModels._
 import TagGeneration.EdgeIdentifier
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
 
 class EdgeIdentifierSpec extends AnyWordSpec with Matchers {
 
@@ -17,11 +15,21 @@ class EdgeIdentifierSpec extends AnyWordSpec with Matchers {
     "Given a list of nodes" should {
       "Link nodes which are related" in {
         val linkedNodes = List(
-          NodePair(Node("running.txt"), List(Node("trainers"), Node("protein"), Node("sprint"))),
-          NodePair(Node("weightlifting.txt"), List(Node("trainers"), Node("protein"), Node("strength"))),
-          NodePair(Node("swimming.txt"), List(Node("goggles"), Node("protein"), Node("water"))))
+          FileAndNodes(
+            Node("running.txt"),
+            List(Node("trainers"), Node("protein"), Node("sprint"))
+          ),
+          FileAndNodes(
+            Node("weightlifting.txt"),
+            List(Node("trainers"), Node("protein"), Node("strength"))
+          ),
+          FileAndNodes(
+            Node("swimming.txt"),
+            List(Node("goggles"), Node("protein"), Node("water"))
+          )
+        )
 
-        EdgeIdentifier.singleEdge(linkedNodes) should contain(
+        EdgeIdentifier.singleEdge(linkedNodes) shouldEqual (
           List(
             Edge(Node("running.txt"), "trainers"),
             Edge(Node("running.txt"), "protein"),
@@ -31,7 +39,9 @@ class EdgeIdentifierSpec extends AnyWordSpec with Matchers {
             Edge(Node("weightlifting.txt"), "strength"),
             Edge(Node("swimming.txt"), "goggles"),
             Edge(Node("swimming.txt"), "protein"),
-            Edge(Node("swimming.txt"), "water")))
+            Edge(Node("swimming.txt"), "water")
+          )
+        )
       }
     }
   }
