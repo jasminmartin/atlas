@@ -8,25 +8,25 @@ type Edge = {
 }
 
 type Graph = {
-    nodes: Array<String>
     edges: Array<Edge>
+    nodes: Array<String>
 }
 
 export default function DataScraper() {
-    const [graphBits, setGraph] = useState([] as Graph[]);
+    const [graphBits, setGraph] = useState({ edges: [], nodes: [] } as Graph);
     useEffect(() => {
         fetch(`${baseURL}/local-link`)
             .then(results => results.json())
-            .then(x => console.log(x))
-        // .then((graphBits: Graph[]) => {
-        //     setGraph(graphBits)
-        // })
+            // .then(c => console.log(c))
+            .then((graphBits: Graph) => {
+                setGraph(graphBits)
+            })
     }, [baseURL]);
 
     return (
         <div>
             <text>Zettelkasten Maybe?!</text>
-            {graphBits.map((graphBits: Graph) => <div>{graphBits.edges}</div>)}
+            <div>{JSON.stringify(graphBits)}</div>
         </div>
     );
 }
