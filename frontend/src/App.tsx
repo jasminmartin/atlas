@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Graph from './app/sections/Graph';
+import DataScraper from './DataScraper'
 
 const NODES = [
   { id: 'sofa', label: 'sofa', width: 144, height: 100 },
@@ -20,7 +21,7 @@ const EDGES = [
 interface AppProps { }
 
 function App({ }: AppProps) {
-  return <Graph nodes={NODES} edges={EDGES} />;
+  return <DataScraper />;
 }
 
 export default App;
