@@ -21,4 +21,9 @@ object LocalFileConsumer extends FileConsumer {
   override def filterFiles(fileList: List[File], extensions: List[String]): List[File] = {
     fileList.filter(f => extensions.exists(x => f.getName.endsWith(x)))
   }
+
+  def getLocalFiles(topLevelDirectory: String, extensions: List[String]) = {
+    val allLocalFiles: Option[List[File]] = listFiles(topLevelDirectory)
+    filterFiles(allLocalFiles.get, extensions)
+  }
 }

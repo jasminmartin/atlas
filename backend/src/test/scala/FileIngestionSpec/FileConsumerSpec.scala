@@ -16,7 +16,6 @@ class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
   "FileConsumerSpec" when {
     "Given a flat file directory structure" should {
       "Return a list of the files it contains" in { f =>
-        println("het" + LocalFileConsumer.listFiles(f.flatDirectoryStructure))
         LocalFileConsumer.listFiles(f.flatDirectoryStructure).get should contain theSameElementsAs f.flatDirectoryStructureFiles
       }
       "Filter out non-text files" in { f =>

@@ -1,8 +1,8 @@
 import java.io.File
 
-import CommonModels.{FileMetaData, FileAndTags, Tag, TagAndFiles}
+import CommonModels.{Edge, FileAndNodes}
 import FileIngestion.LocalFileConsumer
-import TagGeneration.{TagIdentifier, TagLinker}
+import TagGeneration.{EdgeIdentifier, NodeIdentifier}
 import org.scalatest.Outcome
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
@@ -15,18 +15,38 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
 
   "FunctionalTestSpec" when {
     "Given a directory" should {
-      "Return a list of documents and related tags" in { f =>
-        val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
-        val filteredFiles: List[File] = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
-        val fileTagList: List[FileAndTags] = TagIdentifier.fileAndTags(filteredFiles)
+      "Return a list of nodes" in { f =>
+        val allFiles: Option[List[File]] =
+          LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
+        val filteredFiles: List[File] =
+          LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
+        val fileTagList: Seq[String] =
+          NodeIdentifier.findAllFileNodes(filteredFiles)
         fileTagList should contain theSameElementsAs
-          List(FileAndTags(FileMetaData("dog.txt"),List()), FileAndTags(FileMetaData("cat.txt"),List()), FileAndTags(FileMetaData("sofa.txt"),List(Tag("[[sitting]]"), Tag("[[furniture]]"))), FileAndTags(FileMetaData("chair.txt"),List(Tag("[[furniture]]"))), FileAndTags(FileMetaData("bathroom.txt"),List()))       }
+          List(
+            "dog.txt",
+            "cat.txt",
+            "sofa.txt",
+            "chair.txt",
+            "bathroom.txt",
+            "[[sitting]]",
+            "[[furniture]]",
+            "[[furniture]]"
+          )
+      }
 
-      "Link documents by their tags" in { f =>
-        val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
-        val filteredFiles: List[File] = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
-        val fileTagList: List[FileAndTags] = TagIdentifier.fileAndTags(filteredFiles)
-        TagLinker.linkDocsByTags(fileTagList) shouldEqual Right(List(TagAndFiles(Tag("[[furniture]]"),List(FileMetaData("chair.txt"), FileMetaData("sofa.txt")))))
+      "Link nodes" in { f =>
+        val allFiles: Option[List[File]] =
+          LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
+        val filteredFiles: List[File] =
+          LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
+        val fileTagList: List[FileAndNodes] =
+          NodeIdentifier.createNodePairs(filteredFiles)
+        EdgeIdentifier.singleEdge(fileTagList) shouldEqual List(
+          Edge("sofa.txt", "[[sitting]]"),
+          Edge("sofa.txt", "[[furniture]]"),
+          Edge("chair.txt", "[[furniture]]")
+        )
       }
     }
   }
@@ -37,9 +57,9 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
     val nestedDirectoryStructure: String = "src/test/Resources"
 
     try {
-      this.withFixture(test.toNoArgTest(FixtureParam(nestedDirectoryStructure: String)))
+      this.withFixture(
+        test.toNoArgTest(FixtureParam(nestedDirectoryStructure: String))
+      )
     }
   }
-
 }
-

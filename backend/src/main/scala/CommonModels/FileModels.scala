@@ -1,9 +1,8 @@
 package CommonModels
 
-case class Tag(tag: String)
+case class FileAndNodes(file: String, tags: List[String])
 
-case class FileMetaData(name: String)
+case class Edge(firstNode: String, secondNode: String)
 
-case class FileAndTags(fileMetaData: FileMetaData, tags: List[Tag])
+case class Graph(nodes: List[String], edges: List[Edge])
 
-case class TagAndFiles(tag: Tag, files: List[FileMetaData])
