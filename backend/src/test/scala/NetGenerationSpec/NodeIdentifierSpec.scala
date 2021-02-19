@@ -16,16 +16,16 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
   "NodeIdentifierSpec" when {
     "Given documents" should {
       "Identify nodes tagged in '[[]]'" in { f =>
-        NodeIdentifier.findTaggedNodes(f.sofaFile) shouldEqual List(Node("[[sitting]]"), Node("[[furniture]]"))
+        NodeIdentifier.findTaggedNodes(f.sofaFile) shouldEqual List("[[sitting]]", "[[furniture]]")
       }
 
       "Identify all nodes (tagged and the file itself)" in { f =>
-        NodeIdentifier.findAllFileNodes(List(f.sofaFile)) shouldEqual List(Node("sofa.txt"), Node("[[sitting]]"), Node("[[furniture]]"))
+        NodeIdentifier.findAllFileNodes(List(f.sofaFile)) shouldEqual List("sofa.txt", "[[sitting]]", "[[furniture]]")
       }
 
       "Associate the tagged nodes '[[]]' to the file Node" in { f =>
         NodeIdentifier.createNodePairs(List(f.sofaFile)) shouldEqual
-          List(FileAndNodes(Node("sofa.txt"), List(Node("[[sitting]]"), Node("[[furniture]]"))))
+          List(FileAndNodes("sofa.txt", List("[[sitting]]", "[[furniture]]")))
       }
     }
   }

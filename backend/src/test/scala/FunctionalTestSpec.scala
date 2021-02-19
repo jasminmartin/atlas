@@ -1,6 +1,6 @@
 import java.io.File
 
-import CommonModels.{Edge, Node, FileAndNodes}
+import CommonModels.{Edge, FileAndNodes}
 import FileIngestion.LocalFileConsumer
 import TagGeneration.{EdgeIdentifier, NodeIdentifier}
 import org.scalatest.Outcome
@@ -16,18 +16,37 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
   "FunctionalTestSpec" when {
     "Given a directory" should {
       "Return a list of nodes" in { f =>
-        val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
-        val filteredFiles: List[File] = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
-        val fileTagList: List[Node] = NodeIdentifier.findAllFileNodes(filteredFiles)
+        val allFiles: Option[List[File]] =
+          LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
+        val filteredFiles: List[File] =
+          LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
+        val fileTagList: Seq[String] =
+          NodeIdentifier.findAllFileNodes(filteredFiles)
         fileTagList should contain theSameElementsAs
-          List(Node("dog.txt"), Node("cat.txt"), Node("sofa.txt"), Node("chair.txt"), Node("bathroom.txt"), Node("[[sitting]]"), Node("[[furniture]]"), Node("[[furniture]]"))
+          List(
+            "dog.txt",
+            "cat.txt",
+            "sofa.txt",
+            "chair.txt",
+            "bathroom.txt",
+            "[[sitting]]",
+            "[[furniture]]",
+            "[[furniture]]"
+          )
       }
 
       "Link nodes" in { f =>
-        val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
-        val filteredFiles: List[File] = LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
-        val fileTagList: List[FileAndNodes] = NodeIdentifier.createNodePairs(filteredFiles)
-        EdgeIdentifier.singleEdge(fileTagList) shouldEqual List(Edge(Node("sofa.txt"),"[[sitting]]"), Edge(Node("sofa.txt"),"[[furniture]]"), Edge(Node("chair.txt"),"[[furniture]]"))
+        val allFiles: Option[List[File]] =
+          LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
+        val filteredFiles: List[File] =
+          LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
+        val fileTagList: List[FileAndNodes] =
+          NodeIdentifier.createNodePairs(filteredFiles)
+        EdgeIdentifier.singleEdge(fileTagList) shouldEqual List(
+          Edge("sofa.txt", "[[sitting]]"),
+          Edge("sofa.txt", "[[furniture]]"),
+          Edge("chair.txt", "[[furniture]]")
+        )
       }
     }
   }
@@ -38,8 +57,9 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
     val nestedDirectoryStructure: String = "src/test/Resources"
 
     try {
-      this.withFixture(test.toNoArgTest(FixtureParam(nestedDirectoryStructure: String)))
+      this.withFixture(
+        test.toNoArgTest(FixtureParam(nestedDirectoryStructure: String))
+      )
     }
   }
 }
-
