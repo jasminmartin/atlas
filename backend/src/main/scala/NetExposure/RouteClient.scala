@@ -19,7 +19,6 @@ class RouteClient extends Directives {
             complete(getNodesAndEdges)
           }
         )
-
   }
 
 
