@@ -3,12 +3,14 @@ import React, { useState, useEffect, useRef } from 'react';
 
 type NodeId = string;
 
-interface Node {
+export interface Node {
   id: NodeId;
   label: string;
+  width?: number,
+  height?: number,
 }
 
-interface Edge {
+export interface Edge {
   from: NodeId;
   to: NodeId;
 }
