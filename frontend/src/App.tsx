@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import logo from './logo.svg';
 import './App.css';
 import Graph, { Node, Edge } from './app/sections/Graph';
-import DataScraper from "./DataScraper";
 
 const baseURL = "http://localhost:4024"
 
@@ -15,29 +13,6 @@ type ServerGraph = {
   edges: Array<ServerEdge>
   nodes: Array<string>
 }
-
-
-
-
-// function NetTemplate(graphBits: Graph) {
-//   const EDGES = graphBits.edges.map(edge => { from: edge.firstNode, to: edge.secondNode });
-
-//   const NODES = graphBits.nodes.map(node => { id: node, label: node, width: 144, height: 100 });
-// }
-
-const NODES: Node[] = [
-  { id: 'sofa', label: 'sofa', width: 144, height: 100 },
-  { id: 'chair', label: 'chair', width: 160, height: 100 },
-  { id: 'potato', label: 'potato', width: 108, height: 100 },
-  { id: 'furniture', label: 'furniture', width: 108, height: 100 },
-];
-
-const EDGES: Edge[] = [
-  { from: 'sofa', to: 'potato' },
-  { from: 'chair', to: 'potato' },
-  { from: 'sofa', to: 'furniture' },
-  { from: 'chair', to: 'furniture' }
-];
 
 interface AppProps { }
 
@@ -63,7 +38,6 @@ function App({ }: AppProps) {
     from: edge.firstNode,
     to: edge.secondNode,
   }))} />;
-  //return <DataScraper />
 }
 
 export default App;
