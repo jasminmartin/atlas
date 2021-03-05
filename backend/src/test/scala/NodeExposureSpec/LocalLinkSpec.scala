@@ -11,13 +11,13 @@ import org.scalatest.Outcome
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
 
-class RouteSpec
+class LocalLinkSpec
     extends FixtureAnyWordSpec
     with ScalatestRouteTest
     with Matchers {
 
   markup {
-    "RouteSpec checks that the Route returns the correct JSON"
+    "Locallink checks that the Route returns the JSON net"
   }
 
   "RouteSpec" when {
