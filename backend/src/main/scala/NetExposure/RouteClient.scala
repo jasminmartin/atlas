@@ -14,19 +14,16 @@ class RouteClient extends Directives with CorsHandler {
 
   def route: Route = {
     Route.seal(
-      concat(
-        corsHandler(
-          (
+      corsHandler(
+        concat(
+
             path("local-link") {
               complete(getNodesAndEdges)
             }
-          ) ~
-            corsHandler(
-              path("file-body" / Segment) { fileName =>
-                complete(getFileBody(fileName))
-              }
-            )
-        )
+             ~
+            path("file-body" / Segment) { fileName =>
+              complete(getFileBody(fileName))
+            })
       )
     )
   }
