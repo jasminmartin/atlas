@@ -22,31 +22,31 @@ class FileBodySpec
 
   "RouteSpec" when {
     "/file-body/ is triggered" should {
-      "return the /dog.txt body when called" in { f =>
+      "return the /dog body when called" in { f =>
         import f._
 
-        Get(s"/file-body/dog.txt") ~> route ~> check {
+        Get(s"/file-body/dog") ~> route ~> check {
           status shouldEqual StatusCodes.OK
           contentType shouldEqual ContentTypes.`application/json`
           val response = responseAs[FileBody]
-          response shouldBe FileBody("dog.txt", "Dogs are animals. They are domesticated. They eat biscuits and drink water.")
+          response shouldBe FileBody("dog", "Dogs are animals. They are domesticated. They eat biscuits and drink water.")
         }
       }
 
-      "return the /bathroom.txt body when called" in { f =>
+      "return the /bathroom body when called" in { f =>
         import f._
 
-        Get(s"/file-body/bathroom.txt") ~> route ~> check {
+        Get(s"/file-body/bathroom") ~> route ~> check {
           status shouldEqual StatusCodes.OK
           contentType shouldEqual ContentTypes.`application/json`
           val response = responseAs[FileBody]
-          response shouldBe FileBody("bathroom.txt", "Contains a bath.")
+          response shouldBe FileBody("bathroom", "Contains a bath.")
         }
       }
 
       "throw an error when a non-existant file is called" in { f =>
         import f._
-        Get(s"/file-body/nonexistant.txt") ~> route ~> check {
+        Get(s"/file-body/nonexistant") ~> route ~> check {
           status shouldEqual StatusCodes.BadRequest
           contentType shouldEqual ContentTypes.`application/json`
           val response = responseAs[NoFileFoundError]

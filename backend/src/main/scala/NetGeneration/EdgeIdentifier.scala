@@ -1,4 +1,4 @@
-package TagGeneration
+package NetGeneration
 
 import CommonModels._
 

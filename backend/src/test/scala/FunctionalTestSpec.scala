@@ -2,7 +2,7 @@ import java.io.File
 
 import CommonModels.{Edge, FileAndNodes}
 import FileIngestion.LocalFileConsumer
-import TagGeneration.{EdgeIdentifier, NodeIdentifier}
+import NetGeneration.{EdgeIdentifier, NodeIdentifier}
 import org.scalatest.Outcome
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
@@ -19,34 +19,20 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
         val allFiles: Option[List[File]] =
           LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
         val filteredFiles: List[File] =
-          LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
+          LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt"))
         val fileTagList: Seq[String] =
           NodeIdentifier.findAllFileNodes(filteredFiles)
         fileTagList should contain theSameElementsAs
           List(
-            "dog.txt",
-            "cat.txt",
-            "sofa.txt",
-            "chair.txt",
-            "bathroom.txt",
-            "[[sitting]]",
-            "[[furniture]]",
-            "[[furniture]]"
+            "dog",
+            "cat",
+            "sofa",
+            "chair",
+            "bathroom",
+            "sitting",
+            "furniture",
+            "furniture"
           )
-      }
-
-      "Link nodes" in { f =>
-        val allFiles: Option[List[File]] =
-          LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
-        val filteredFiles: List[File] =
-          LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
-        val fileTagList: List[FileAndNodes] =
-          NodeIdentifier.createNodePairs(filteredFiles)
-        EdgeIdentifier.singleEdge(fileTagList) shouldEqual List(
-          Edge("sofa.txt", "[[sitting]]"),
-          Edge("sofa.txt", "[[furniture]]"),
-          Edge("chair.txt", "[[furniture]]")
-        )
       }
     }
   }

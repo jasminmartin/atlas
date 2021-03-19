@@ -1,6 +1,6 @@
 package NetGenerationSpec
 import CommonModels._
-import TagGeneration.EdgeIdentifier
+import NetGeneration.EdgeIdentifier
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -29,8 +29,7 @@ class EdgeIdentifierSpec extends AnyWordSpec with Matchers {
           )
         )
 
-        EdgeIdentifier.singleEdge(linkedNodes) shouldEqual (
-          List(
+        EdgeIdentifier.singleEdge(linkedNodes) shouldEqual List(
             Edge("running.txt", "trainers"),
             Edge("running.txt", "protein"),
             Edge("running.txt", "sprint"),
@@ -41,7 +40,6 @@ class EdgeIdentifierSpec extends AnyWordSpec with Matchers {
             Edge("swimming.txt", "protein"),
             Edge("swimming.txt", "water")
           )
-        )
       }
     }
   }

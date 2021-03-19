@@ -20,7 +20,7 @@ class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
       }
       "Filter out non-text files" in { f =>
         val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.flatDirectoryStructure)
-        LocalFileConsumer.filterFiles(allFiles.get, List(".txt")) should contain theSameElementsAs f.flatDirectoryStructureTxtFiles
+        LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt")) should contain theSameElementsAs f.flatDirectoryStructureTxtFiles
       }
       "Handle the case if no files are found" in { f =>
         val emptyDirectoryStructure: String = "src/test/Resources/household/inhabitants"
@@ -36,7 +36,7 @@ class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
 
       "Filter out non-text files" in { f =>
         val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
-        LocalFileConsumer.filterFiles(allFiles.get, List(".txt")) should contain theSameElementsAs f.nestedDirectoryStructureTxtFiles
+        LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt")) should contain theSameElementsAs f.nestedDirectoryStructureTxtFiles
       }
       "Handle the case if no files are found" in { f =>
         val emptyDirectoryStructure: String = "src/test/Resources/household/inhabitants"

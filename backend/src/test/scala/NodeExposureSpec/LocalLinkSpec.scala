@@ -31,19 +31,19 @@ class LocalLinkSpec
           val response = responseAs[Graph]
           response shouldBe Graph(
             List(
-              "dog.txt",
-              "cat.txt",
-              "sofa.txt",
-              "chair.txt",
-              "bathroom.txt",
-              "[[sitting]]",
-              "[[furniture]]",
-              "[[furniture]]"
+              "dog",
+              "cat",
+              "sofa",
+              "chair",
+              "bathroom",
+              "sitting",
+              "furniture",
+              "furniture"
             ),
             List(
-              Edge("sofa.txt", "[[sitting]]"),
-              Edge("sofa.txt", "[[furniture]]"),
-              Edge("chair.txt", "[[furniture]]")
+              Edge("sofa", "sitting"),
+              Edge("sofa", "furniture"),
+              Edge("chair", "furniture")
             )
           )
         }

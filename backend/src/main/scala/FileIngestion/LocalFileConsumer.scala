@@ -18,12 +18,12 @@ object LocalFileConsumer extends FileConsumer {
     recList.filter(_.isFile)
   }
 
-  override def filterFiles(fileList: List[File], extensions: List[String]): List[File] = {
+  override def filterFileExtensions(fileList: List[File], extensions: List[String]): List[File] = {
     fileList.filter(f => extensions.exists(x => f.getName.endsWith(x)))
   }
 
-  def getLocalFiles(topLevelDirectory: String, extensions: List[String]) = {
+  def getLocalFiles(topLevelDirectory: String, extensions: List[String]): List[File] = {
     val allLocalFiles: Option[List[File]] = listFiles(topLevelDirectory)
-    filterFiles(allLocalFiles.get, extensions)
+    filterFileExtensions(allLocalFiles.get, extensions)
   }
 }
