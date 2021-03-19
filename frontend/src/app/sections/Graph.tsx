@@ -1,7 +1,7 @@
 import dagre from 'dagre';
 import useFileFetch from "./useFileFetch"
 import React, { useEffect, useState } from "react";
-
+import Modal from "./Modal"
 type NodeId = string;
 
 export interface Node {
@@ -60,7 +60,6 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
   const nodePadding = 8
 
   const [lastClicked, setLastClicked] = useState<string | undefined>(undefined)
-
   return (
     <>
       <svg viewBox="0 0 1000 1000">
@@ -98,7 +97,12 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
             </>
           ))}
       </svg>
-      {lastClicked && <FileBody fileName={lastClicked} />}
+      {/* {lastClicked && <FileBody fileName={lastClicked} />} */}
+      {lastClicked && (
+        <Modal>
+          <FileBody fileName={lastClicked} />
+        </Modal>
+      )}
     </>
   );
 };
