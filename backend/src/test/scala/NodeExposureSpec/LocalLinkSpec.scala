@@ -1,7 +1,9 @@
 package NodeExposureSpec
 
 import CommonModels.{Edge, Graph}
+import FileIngestion.LocalFileConsumer
 import NetExposure.RouteClient
+import NetGeneration.TextGraphCreator
 import akka.http.scaladsl.model.{ContentTypes, StatusCodes}
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
@@ -52,7 +54,9 @@ class LocalLinkSpec
   }
 
   override protected def withFixture(test: OneArgTest): Outcome = {
-    val zettelkastenRoute: RouteClient = RouteClient()
+    val localFileConsumer = LocalFileConsumer
+    val textGraphCreator = new TextGraphCreator(localFileConsumer, "src/test/Resources")
+    val zettelkastenRoute: RouteClient = new RouteClient(textGraphCreator)
 
     super.withFixture(
       test.toNoArgTest(

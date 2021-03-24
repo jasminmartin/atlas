@@ -17,7 +17,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
     "Given a directory" should {
       "Return a list of nodes" in { f =>
         val allFiles: Option[List[File]] =
-          LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
+          LocalFileConsumer.isDirectory(f.nestedDirectoryStructure)
         val filteredFiles: List[File] =
           LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt"))
         val fileTagList: Seq[String] =

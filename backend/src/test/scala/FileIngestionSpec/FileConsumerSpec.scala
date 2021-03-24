@@ -16,31 +16,31 @@ class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
   "FileConsumerSpec" when {
     "Given a flat file directory structure" should {
       "Return a list of the files it contains" in { f =>
-        LocalFileConsumer.listFiles(f.flatDirectoryStructure).get should contain theSameElementsAs f.flatDirectoryStructureFiles
+        LocalFileConsumer.isDirectory(f.flatDirectoryStructure).get should contain theSameElementsAs f.flatDirectoryStructureFiles
       }
       "Filter out non-text files" in { f =>
-        val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.flatDirectoryStructure)
+        val allFiles: Option[List[File]] = LocalFileConsumer.isDirectory(f.flatDirectoryStructure)
         LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt")) should contain theSameElementsAs f.flatDirectoryStructureTxtFiles
       }
       "Handle the case if no files are found" in { f =>
         val emptyDirectoryStructure: String = "src/test/Resources/household/inhabitants"
-        LocalFileConsumer.listFiles(emptyDirectoryStructure) shouldBe None
+        LocalFileConsumer.isDirectory(emptyDirectoryStructure) shouldBe None
       }
       "Handle the case if a file does not have accessible permissions" in { f => pending }
     }
 
     "Given a nested file directory structure" should {
       "Return a list of the files contained in all directories" in { f =>
-        LocalFileConsumer.listFiles(f.nestedDirectoryStructure).get should contain theSameElementsAs f.nestedDirectoryStructureFiles
+        LocalFileConsumer.isDirectory(f.nestedDirectoryStructure).get should contain theSameElementsAs f.nestedDirectoryStructureFiles
       }
 
       "Filter out non-text files" in { f =>
-        val allFiles: Option[List[File]] = LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
+        val allFiles: Option[List[File]] = LocalFileConsumer.isDirectory(f.nestedDirectoryStructure)
         LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt")) should contain theSameElementsAs f.nestedDirectoryStructureTxtFiles
       }
       "Handle the case if no files are found" in { f =>
         val emptyDirectoryStructure: String = "src/test/Resources/household/inhabitants"
-        LocalFileConsumer.listFiles(emptyDirectoryStructure) shouldBe None
+        LocalFileConsumer.isDirectory(emptyDirectoryStructure) shouldBe None
       }
     }
   }

@@ -29,7 +29,7 @@ class EdgeIdentifierSpec extends AnyWordSpec with Matchers {
           )
         )
 
-        EdgeIdentifier.singleEdge(linkedNodes) shouldEqual List(
+        EdgeIdentifier.createEdges(linkedNodes) shouldEqual List(
             Edge("running.txt", "trainers"),
             Edge("running.txt", "protein"),
             Edge("running.txt", "sprint"),

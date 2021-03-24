@@ -1,7 +1,7 @@
 package Server
 
-import Server.Configuration.appConfig.zettelkasten.application
-import Server.Configuration.{zetRoutes, _}
+import Server.Configuration.appConfig.application
+import Server.Configuration.{allRoutes, _}
 import akka.http.scaladsl.Http
 import org.slf4j.LoggerFactory
 
@@ -12,7 +12,7 @@ object HttpServer extends App {
 
   private val logger = LoggerFactory.getLogger(getClass.getName)
 
-  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt(application.interface, application.port).bind(zetRoutes.route)
+  val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt(application.interface, application.port).bind(allRoutes.route)
 
   Try(Await.result(bindingFuture, application.serverSetupTimeout)) match {
     case Success(bind) =>

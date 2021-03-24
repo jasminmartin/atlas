@@ -1,9 +1,9 @@
 package NetExposure
 
-import NetGeneration.GraphCreator
+import NetGeneration.TextGraphCreator
 import akka.http.scaladsl.server.{Directives, Route}
 
-class RouteClient extends Directives with CorsHandler {
+class RouteClient(graphCreator: TextGraphCreator) extends Directives with CorsHandler {
 
   import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
   import io.circe.generic.auto._
@@ -13,19 +13,14 @@ class RouteClient extends Directives with CorsHandler {
       corsHandler(
         concat(
           path("local-link") {
-            complete(GraphCreator.combineNodesAndEdges)
+            complete(graphCreator.createGraph)
           }
             ~
               path("file-body" / Segment) { fileName =>
-                complete(GraphCreator.getFileBody(fileName))
+                complete(graphCreator.getFileBody(fileName))
               }
         )
       )
     )
   }
-}
-
-object RouteClient {
-  def apply(): RouteClient =
-    new RouteClient
 }
