@@ -1,9 +1,12 @@
 package NetExposure
 
 import NetGeneration.TextGraphCreator
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directives, Route}
 
-class RouteClient(graphCreator: TextGraphCreator) extends Directives with CorsHandler {
+class RouteClient(graphCreator: TextGraphCreator)
+    extends Directives
+    with CorsHandler {
 
   import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
   import io.circe.generic.auto._
@@ -17,7 +20,10 @@ class RouteClient(graphCreator: TextGraphCreator) extends Directives with CorsHa
           }
             ~
               path("file-body" / Segment) { fileName =>
-                complete(graphCreator.getFileBody(fileName))
+                complete(graphCreator.getFileBody(fileName) match {
+                  case Some(file) => file
+                  case None       => StatusCodes.NotFound
+                })
               }
         )
       )

@@ -5,7 +5,8 @@ import FileIngestion.{FileConsumer, LocalFileConsumer}
 
 import scala.io.Source
 
-class TextGraphCreator(fileConsumer: FileConsumer, fileSource: String) extends GraphCreator {
+class TextGraphCreator(fileConsumer: FileConsumer, fileSource: String)
+    extends GraphCreator {
 
   override def createGraph: Graph = {
     val nodes = NodeIdentifier.findAllFileNodes(
@@ -24,15 +25,16 @@ class TextGraphCreator(fileConsumer: FileConsumer, fileSource: String) extends G
     fileNames.replace(".txt", "")
   }
 
-  def getFileBody(fileName: String): FileBody = {
+  def getFileBody(fileName: String): Option[FileBody] = {
     val nameWithExtension = fileName + ".txt"
-    val foundFile = LocalFileConsumer
+    LocalFileConsumer
       .getFiles("src/test/Resources", List(".txt"))
-      .filter(_.getName == nameWithExtension).head
-    val bufferFile = Source.fromFile(foundFile)
-    val stringFile = bufferFile.mkString
-    bufferFile.close()
-    FileBody(fileName, stringFile.trim())
+      .find(_.getName == nameWithExtension)
+      .map(file => {
+        val bufferFile = Source.fromFile(file)
+        val stringFile = bufferFile.mkString
+        bufferFile.close()
+        FileBody(fileName, stringFile.trim())
+      })
   }
 }
-
