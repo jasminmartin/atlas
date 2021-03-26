@@ -3,10 +3,11 @@ import ReactDOM from "react-dom"
 
 
 type ModalProps = {
-    children: ReactNode
+    children: ReactNode,
+    onClose: () => void,
 }
 
-const Modal = (props: ModalProps) => {
+const Modal = ({ children, onClose }: ModalProps) => {
     const thisElement = useRef<HTMLDivElement | null>(null)
     useEffect(() => {
         if (!thisElement.current) {
@@ -16,11 +17,16 @@ const Modal = (props: ModalProps) => {
         if (element) {
             element.appendChild(thisElement.current)
         }
+        return function cleanUp() {
+            thisElement.current && element?.removeChild(thisElement.current)
+        }
     }, [])
     return thisElement.current ? ReactDOM.createPortal(
-        <>
-            {props.children}
-        </>,
+        <div className="ModalBackground" onClick={onClose}>
+            <div className="ModalContent">
+                {children}
+            </div>
+        </div>,
         thisElement.current) : null
 }
 

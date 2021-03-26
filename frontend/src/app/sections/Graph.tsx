@@ -2,6 +2,10 @@ import dagre from 'dagre';
 import useFileFetch from "./useFileFetch"
 import React, { useEffect, useState } from "react";
 import Modal from "./Modal"
+import { style } from 'd3-selection';
+
+import { index } from 'd3-array';
+
 type NodeId = string;
 
 export interface Node {
@@ -49,7 +53,15 @@ const Loading = () => <p>Loading...</p>
 
 const FileBody = ({ fileName }: FileBodyProps) => {
   const { body, isPending } = useFileFetch(fileName)
-  return isPending ? (<Loading />) : <p>{JSON.stringify(body)}</p>
+  return (
+    <div className="modalContent">
+      {isPending ? <Loading /> : <>
+        <h2>{body?.name}</h2>
+        <p>{body?.body}</p>
+      </>
+      }
+    </div>
+  )
 }
 
 export const Graph = ({ nodes, edges }: GraphProps) => {
@@ -58,10 +70,9 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
   buildGraph(currentGraph, nodes, edges);
   const nodeWidth = 100
   const nodePadding = 8
-
   const [lastClicked, setLastClicked] = useState<string | undefined>(undefined)
   return (
-    <>
+    <><div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <svg viewBox="0 0 1000 1000">
         {currentGraph.edges().map((edge) => {
           console.dir(edge);
@@ -83,26 +94,38 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
           .map((node) => (
             <>
               <circle
-                style={{ fill: "pink" }}
-                // onClick={() => FileBody(node.label || "")}
-                onClick={() => setLastClicked(node.label)}
+                style={{ fill: "lavender" }}
                 cx={node.x}
                 cy={node.y}
                 r={nodeWidth / 2}>
               </circle>
-              <text textLength={nodeWidth - nodePadding * 2} x={node.x - (nodeWidth / 2) + nodePadding} y={node.y}>
-                {node.label}
-              </text>
-
+              <foreignObject
+                onClick={() => setLastClicked(node.label)}
+                x={node.x - (nodeWidth / 4)}
+                y={node.y - (nodeWidth / 4)}
+                width={nodeWidth / 2}
+                height={nodeWidth / 2}>
+                <div
+                  onClick={() => setLastClicked(node.label)}
+                  title={node.label} style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <label>{node.label}</label>
+                </div>
+              </foreignObject>
             </>
           ))}
       </svg>
-      {/* {lastClicked && <FileBody fileName={lastClicked} />} */}
       {lastClicked && (
-        <Modal>
+        <Modal onClose={() => setLastClicked(undefined)}>
           <FileBody fileName={lastClicked} />
         </Modal>
       )}
+    </div>
     </>
   );
 };
