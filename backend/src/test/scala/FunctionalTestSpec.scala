@@ -40,7 +40,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
   case class FixtureParam(nestedDirectoryStructure: String)
 
   override protected def withFixture(test: OneArgTest): Outcome = {
-    val nestedDirectoryStructure: String = "src/test/Resources"
+    val nestedDirectoryStructure: String = "src/test/Resources/TestData"
 
     try {
       this.withFixture(

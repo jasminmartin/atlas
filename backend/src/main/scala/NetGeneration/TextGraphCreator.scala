@@ -28,7 +28,7 @@ class TextGraphCreator(fileConsumer: FileConsumer, fileSource: String)
   def getFileBody(fileName: String): Option[FileBody] = {
     val nameWithExtension = fileName + ".txt"
     LocalFileConsumer
-      .getFiles("src/test/Resources", List(".txt"))
+      .getFiles("src/test/Resources/TestData", List(".txt"))
       .find(_.getName == nameWithExtension)
       .map(file => {
         val bufferFile = Source.fromFile(file)

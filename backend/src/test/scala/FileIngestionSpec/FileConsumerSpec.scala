@@ -23,7 +23,7 @@ class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
         LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt")) should contain theSameElementsAs f.flatDirectoryStructureTxtFiles
       }
       "Handle the case if no files are found" in { f =>
-        val emptyDirectoryStructure: String = "src/test/Resources/household/inhabitants"
+        val emptyDirectoryStructure: String = "src/test/Resources/TestData/household/inhabitants"
         LocalFileConsumer.isDirectory(emptyDirectoryStructure) shouldBe None
       }
       "Handle the case if a file does not have accessible permissions" in { f => pending }
@@ -39,7 +39,7 @@ class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
         LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt")) should contain theSameElementsAs f.nestedDirectoryStructureTxtFiles
       }
       "Handle the case if no files are found" in { f =>
-        val emptyDirectoryStructure: String = "src/test/Resources/household/inhabitants"
+        val emptyDirectoryStructure: String = "src/test/Resources/TestData/household/inhabitants"
         LocalFileConsumer.isDirectory(emptyDirectoryStructure) shouldBe None
       }
     }
@@ -47,16 +47,16 @@ class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
 
   override protected def withFixture(test: OneArgTest): Outcome = {
 
-    val catPicture = new File("src/test/Resources/household/catPicture.png")
-    val chair = new File("src/test/Resources/household/chair.txt")
-    val sofa = new File("src/test/Resources/household/sofa.txt")
-    val bathroom = new File("src/test/Resources/household/rooms/bathroom.txt")
-    val horse = new File("src/test/Resources/household/rooms/horse.jpg")
-    val dogPicture = new File("src/test/Resources/household/rooms/dog.png")
-    val cat = new File("src/test/Resources/cat.txt")
-    val dog = new File("src/test/Resources/dog.txt")
+    val catPicture = new File("src/test/Resources/TestData/household/catPicture.png")
+    val chair = new File("src/test/Resources/TestData/household/chair.txt")
+    val sofa = new File("src/test/Resources/TestData/household/sofa.txt")
+    val bathroom = new File("src/test/Resources/TestData/household/rooms/bathroom.txt")
+    val horse = new File("src/test/Resources/TestData/household/rooms/horse.jpg")
+    val dogPicture = new File("src/test/Resources/TestData/household/rooms/dog.png")
+    val cat = new File("src/test/Resources/TestData/cat.txt")
+    val dog = new File("src/test/Resources/TestData/dog.txt")
 
-    val flatDirectoryStructure: String = "src/test/Resources/household/rooms"
+    val flatDirectoryStructure: String = "src/test/Resources/TestData/household/rooms"
 
     val flatDirectoryStructureFiles: List[File] = List(
       bathroom, dogPicture, horse
@@ -66,7 +66,7 @@ class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
       bathroom
     )
 
-    val nestedDirectoryStructure: String = "src/test/Resources"
+    val nestedDirectoryStructure: String = "src/test/Resources/TestData"
 
     val nestedDirectoryStructureFiles: List[File] = List(
       chair, sofa, catPicture, bathroom, dogPicture, dog, cat, horse

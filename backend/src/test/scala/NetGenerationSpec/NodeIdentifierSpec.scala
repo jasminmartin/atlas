@@ -33,7 +33,7 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
   case class FixtureParam(sofaFile: File)
 
   override protected def withFixture(test: OneArgTest): Outcome = {
-    val sofaFile = new File("src/test/Resources/household/sofa.txt")
+    val sofaFile = new File("src/test/Resources/TestData/household/sofa.txt")
 
     try {
       this.withFixture(test.toNoArgTest(

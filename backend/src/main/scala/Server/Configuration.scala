@@ -15,6 +15,6 @@ object Configuration extends ActorSystemConfig {
 
   val appConfig: ZetConfig = ConfigSource.default.loadOrThrow[ZetConfig]
 
-  val graphCreator = new TextGraphCreator(LocalFileConsumer, "src/test/Resources")
+  val graphCreator = new TextGraphCreator(LocalFileConsumer, "src/test/Resources/TestData")
   val allRoutes = new RouteClient(graphCreator)
 }
