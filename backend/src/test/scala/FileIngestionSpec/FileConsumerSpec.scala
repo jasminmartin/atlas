@@ -53,9 +53,10 @@ class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
     val bathroom = new File("src/test/Resources/TestData/household/rooms/bathroom.txt")
     val horse = new File("src/test/Resources/TestData/household/rooms/horse.jpg")
     val dogPicture = new File("src/test/Resources/TestData/household/rooms/dog.png")
-    val cat = new File("src/test/Resources/TestData/cat.txt")
-    val dog = new File("src/test/Resources/TestData/dog.txt")
-
+    val cat = new File("src/test/Resources/TestData/household/pets/cat.txt")
+    val dog = new File("src/test/Resources/TestData/household/pets/dog.txt")
+    val animals = new File("src/test/Resources/TestData/Animals.txt")
+    val lion = new File("src/test/Resources/TestData/household/wildlife/lion.txt")
     val flatDirectoryStructure: String = "src/test/Resources/TestData/household/rooms"
 
     val flatDirectoryStructureFiles: List[File] = List(
@@ -69,11 +70,11 @@ class FileConsumerSpec extends FixtureAnyWordSpec with Matchers {
     val nestedDirectoryStructure: String = "src/test/Resources/TestData"
 
     val nestedDirectoryStructureFiles: List[File] = List(
-      chair, sofa, catPicture, bathroom, dogPicture, dog, cat, horse
+      chair, sofa, catPicture, bathroom, dogPicture, dog, cat, horse, animals, lion
     )
 
     val nestedDirectoryStructureTxtFiles: List[File] = List(
-      chair, sofa, dog, cat, bathroom
+      chair, sofa, dog, cat, bathroom, lion, animals
     )
 
     try {

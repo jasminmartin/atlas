@@ -24,14 +24,19 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
           NodeIdentifier.findAllFileNodes(filteredFiles)
         fileTagList should contain theSameElementsAs
           List(
-            "dog",
-            "cat",
+            "Animals",
             "sofa",
             "chair",
+            "dog",
+            "cat",
+            "lion",
             "bathroom",
+            "cat",
+            "dog",
             "sitting",
             "furniture",
-            "furniture"
+            "furniture",
+            "cat"
           )
       }
     }
