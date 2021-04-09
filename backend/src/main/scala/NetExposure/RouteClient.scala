@@ -1,13 +1,12 @@
 package NetExposure
 
-import java.io.File
-
-import CommonModels.Graph
-import FileIngestion.LocalFileConsumer
-import TagGeneration.{EdgeIdentifier, NodeIdentifier}
+import NetGeneration.TextGraphCreator
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directives, Route}
 
-class RouteClient extends Directives with CorsHandler {
+class RouteClient(graphCreator: TextGraphCreator)
+    extends Directives
+    with CorsHandler {
 
   import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
   import io.circe.generic.auto._
@@ -15,23 +14,19 @@ class RouteClient extends Directives with CorsHandler {
   def route: Route = {
     Route.seal(
       corsHandler(
-        path("local-link") {
-          complete(getNodesAndEdges)
-        }
+        concat(
+          path("local-link") {
+            complete(graphCreator.createGraph)
+          }
+            ~
+              path("file-body" / Segment) { fileName =>
+                complete(graphCreator.getFileBody(fileName) match {
+                  case Some(file) => file
+                  case None       => StatusCodes.NotFound
+                })
+              }
+        )
       )
     )
   }
-
-  def getNodesAndEdges: Graph = {
-    val files: List[File] =
-      LocalFileConsumer.getLocalFiles("src/test/Resources", List(".txt"))
-    val nodes = NodeIdentifier.findAllFileNodes(files)
-    val edges = EdgeIdentifier.singleEdge(NodeIdentifier.createNodePairs(files))
-    Graph(nodes, edges)
-  }
-}
-
-object RouteClient {
-  def apply(): RouteClient =
-    new RouteClient
 }

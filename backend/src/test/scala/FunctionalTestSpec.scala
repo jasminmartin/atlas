@@ -2,7 +2,7 @@ import java.io.File
 
 import CommonModels.{Edge, FileAndNodes}
 import FileIngestion.LocalFileConsumer
-import TagGeneration.{EdgeIdentifier, NodeIdentifier}
+import NetGeneration.{EdgeIdentifier, NodeIdentifier}
 import org.scalatest.Outcome
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
@@ -17,36 +17,27 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
     "Given a directory" should {
       "Return a list of nodes" in { f =>
         val allFiles: Option[List[File]] =
-          LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
+          LocalFileConsumer.isDirectory(f.nestedDirectoryStructure)
         val filteredFiles: List[File] =
-          LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
+          LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt"))
         val fileTagList: Seq[String] =
           NodeIdentifier.findAllFileNodes(filteredFiles)
         fileTagList should contain theSameElementsAs
           List(
-            "dog.txt",
-            "cat.txt",
-            "sofa.txt",
-            "chair.txt",
-            "bathroom.txt",
-            "[[sitting]]",
-            "[[furniture]]",
-            "[[furniture]]"
+            "Animals",
+            "sofa",
+            "chair",
+            "dog",
+            "cat",
+            "lion",
+            "bathroom",
+            "cat",
+            "dog",
+            "sitting",
+            "furniture",
+            "furniture",
+            "cat"
           )
-      }
-
-      "Link nodes" in { f =>
-        val allFiles: Option[List[File]] =
-          LocalFileConsumer.listFiles(f.nestedDirectoryStructure)
-        val filteredFiles: List[File] =
-          LocalFileConsumer.filterFiles(allFiles.get, List(".txt"))
-        val fileTagList: List[FileAndNodes] =
-          NodeIdentifier.createNodePairs(filteredFiles)
-        EdgeIdentifier.singleEdge(fileTagList) shouldEqual List(
-          Edge("sofa.txt", "[[sitting]]"),
-          Edge("sofa.txt", "[[furniture]]"),
-          Edge("chair.txt", "[[furniture]]")
-        )
       }
     }
   }
@@ -54,7 +45,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
   case class FixtureParam(nestedDirectoryStructure: String)
 
   override protected def withFixture(test: OneArgTest): Outcome = {
-    val nestedDirectoryStructure: String = "src/test/Resources"
+    val nestedDirectoryStructure: String = "src/test/Resources/TestData"
 
     try {
       this.withFixture(

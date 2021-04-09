@@ -1,0 +1,1 @@
+A Kubernetes [[service]] is a set of pods that work together, such as one tier of a multi-tier application. The set of [[pods]] that constitute a service are defined by a label selector. Kubernetes provides two modes of service discovery, using environmental variables or using [[Kubernetes]] DNS.
