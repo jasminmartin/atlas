@@ -1,5 +1,6 @@
 package NetExposure
 
+import CommonModels.FileBody
 import NetGeneration.TextGraphCreator
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directives, Route}
@@ -15,16 +16,22 @@ class RouteClient(graphCreator: TextGraphCreator)
     Route.seal(
       corsHandler(
         concat(
-          path("local-link") {
+          (get & path("local-link")) {
             complete(graphCreator.createGraph)
           }
             ~
-              path("file-body" / Segment) { fileName =>
+            (get & path("file-body" / Segment)) { fileName =>
                 complete(graphCreator.getFileBody(fileName) match {
                   case Some(file) => file
                   case None       => StatusCodes.NotFound
                 })
               }
+          ~
+            (put & path("file-body" / Segment)) { fileName =>
+              entity(as[FileBody]) { request =>
+                complete(graphCreator.updateFileBody(fileName, request.body))
+              }
+            }
         )
       )
     )

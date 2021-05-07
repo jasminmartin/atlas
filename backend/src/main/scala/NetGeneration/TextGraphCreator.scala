@@ -3,6 +3,7 @@ package NetGeneration
 import CommonModels.{FileBody, Graph}
 import FileIngestion.{FileConsumer, LocalFileConsumer}
 
+import java.io.{BufferedWriter, FileWriter}
 import scala.io.Source
 
 class TextGraphCreator(fileConsumer: FileConsumer, fileSource: String)
@@ -36,5 +37,18 @@ class TextGraphCreator(fileConsumer: FileConsumer, fileSource: String)
         bufferFile.close()
         FileBody(fileName, stringFile.trim())
       })
+  }
+
+  def updateFileBody(fileName: String, body: String): Graph = {
+    val nameWithExtension = fileName + ".txt"
+    LocalFileConsumer
+      .getFiles("src/test/Resources/TestData", List(".txt"))
+      .find(_.getName == nameWithExtension)
+      .foreach(file => {
+        val bw = new BufferedWriter(new FileWriter(file))
+        bw.write(body)
+        bw.close()
+      })
+    createGraph
   }
 }
