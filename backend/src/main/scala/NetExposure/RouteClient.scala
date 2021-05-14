@@ -27,7 +27,7 @@ class RouteClient(graphCreator: TextGraphCreator)
                 })
               }
           ~
-            (put & path("file-body" / Segment)) { fileName =>
+            (post & path("file-body" / Segment)) { fileName =>
               entity(as[FileBody]) { request =>
                 complete(graphCreator.updateFileBody(fileName, request.body))
               }

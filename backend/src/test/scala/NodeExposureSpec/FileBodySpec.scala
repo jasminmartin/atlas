@@ -59,7 +59,7 @@ class FileBodySpec
       }
     }
 
-    "Put /file-body/ is triggered" should {
+    "Post /file-body/ is triggered" should {
       "update a file-body with the new put information" in { f =>
         val requestEntity: Json =
           FileBody("bathroom", "Is for [[sitting]] in.").asJson
@@ -67,7 +67,7 @@ class FileBodySpec
         val entity =
           HttpEntity(ContentTypes.`application/json`, requestEntity.toString())
 
-        Put(s"/file-body/bathroom", entity) ~> f.route ~> check {
+        Post(s"/file-body/bathroom", entity) ~> f.route ~> check {
           contentType shouldEqual ContentTypes.`application/json`
           status shouldEqual StatusCodes.OK
         }
@@ -116,7 +116,7 @@ class FileBodySpec
         val revert: Json =
           FileBody("bathroom", "Contains a bath.").asJson
 
-        Put(s"/file-body/bathroom", revert) ~> f.route ~> check {
+        Post(s"/file-body/bathroom", revert) ~> f.route ~> check {
           contentType shouldEqual ContentTypes.`application/json`
           status shouldEqual StatusCodes.OK
         }
