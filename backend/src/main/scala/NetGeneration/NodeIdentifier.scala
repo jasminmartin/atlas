@@ -1,9 +1,6 @@
 package NetGeneration
 
 import java.io.File
-
-import CommonModels.FileAndNodes
-
 import scala.io.Source
 
 object NodeIdentifier {
@@ -17,17 +14,24 @@ object NodeIdentifier {
     val bufferFile = Source.fromFile(file)
     val stringFile = bufferFile.mkString
     bufferFile.close()
-    tagRegex.findAllMatchIn(stringFile).map(taggedNode => stripNode(taggedNode.toString)).toList
+    tagRegex
+      .findAllMatchIn(stringFile)
+      .map(taggedNode => stripNode(taggedNode.toString))
+      .toList
   }
 
-//  def findAllFileNodes(allFiles: List[File]): List[String] = {
-//    val taggedNodes: List[String] = allFiles.flatMap(file => findTaggedNodes(file))
-//    val fileNodes: List[String] = allFiles.map(file => sanitizeFiles(file.getName))
-//    val allNodes: List[String] = fileNodes ++ taggedNodes
-//    allNodes
-//  }
-//
-//  def createNodePairs(allFiles: List[File]): List[FileAndNodes] = {
-//     allFiles.map(file => FileAndNodes(sanitizeFiles(file.getName), findTaggedNodes(file)))
-//  }
+  def combineStems(filesAndNodes: List[String]): List[String] = {
+    val d= filesAndNodes.map(name => removeSuffix(name)).distinct
+    println(s"combineStems + $d")
+    d
+  }
+
+  def removeSuffix(str: String): String = {
+    str match {
+      case str if str.endsWith("ing") => str.dropRight(3)
+      case str if str.endsWith("ed") => str.dropRight(2)
+      case str if str.endsWith("es") => str.dropRight(2)
+      case str => str
+    }
+  }
 }

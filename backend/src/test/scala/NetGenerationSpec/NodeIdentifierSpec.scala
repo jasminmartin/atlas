@@ -30,7 +30,16 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
           List(FileAndNodes("sofa", List("sitting", "furniture")))
       }
 
-      "Combine empty files with the same stem" in { f => {pending}}
+      "On attempting stemming" should {
+        "Normalise the stem" in { f => {
+          NodeIdentifier.removeSuffix("Meowing") shouldEqual "Meow"
+          NodeIdentifier.removeSuffix("Stressed") shouldEqual "Stress"
+          NodeIdentifier.removeSuffix("Misses") shouldEqual "Miss"
+        }}
+        "Store distinct stemmed names" in { f =>
+          NodeIdentifier.combineStems(List("Stressed","Stressing", "Stresses", "Bird", "Birding", "Potato")) shouldEqual List("Stress", "Bird", "Potato")
+        }
+      }
     }
   }
 

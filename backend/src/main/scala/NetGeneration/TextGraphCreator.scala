@@ -2,7 +2,8 @@ package NetGeneration
 
 import CommonModels.{FileAndNodes, FileBody, Graph}
 import FileIngestion.{FileConsumer, LocalFileConsumer}
-import NetGeneration.NodeIdentifier.findTaggedNodes
+import NetGeneration.NodeIdentifier.{combineStems, findTaggedNodes}
+
 import java.io.{BufferedWriter, File, FileWriter}
 import scala.io.Source
 
@@ -30,14 +31,18 @@ class TextGraphCreator(fileConsumer: FileConsumer, fileSource: String)
     for {
     taggedNodes <- allFiles.map(file => findTaggedNodes(file))
     fileNodes = allFiles.map(file => sanitizeFiles(file.getName))
-    allNodes <- fileNodes ++ taggedNodes
-    } yield allNodes
+    allNodes = fileNodes ++ taggedNodes
+    combine <- combineStems(allNodes)
+    a = println(s"findAllFileNodes + $combine")
+    } yield combine
   }
 
   def createNodePairs(allFiles: List[File]): List[FileAndNodes] = {
-    allFiles.map(file =>
+    val b = allFiles.map(file =>
       FileAndNodes(sanitizeFiles(file.getName), findTaggedNodes(file))
     )
+    println(s"createNodePairs + $b")
+    b
   }
 
   def getFileBody(fileName: String): Option[FileBody] = {
