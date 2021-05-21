@@ -1,29 +1,43 @@
 package NetGeneration
 
-import CommonModels.{FileBody, Graph}
+import CommonModels.{FileAndNodes, FileBody, Graph}
 import FileIngestion.{FileConsumer, LocalFileConsumer}
-
-import java.io.{BufferedWriter, FileWriter}
+import NetGeneration.NodeIdentifier.findTaggedNodes
+import java.io.{BufferedWriter, File, FileWriter}
 import scala.io.Source
 
 class TextGraphCreator(fileConsumer: FileConsumer, fileSource: String)
     extends GraphCreator {
 
   override def createGraph: Graph = {
-    val nodes = NodeIdentifier.findAllFileNodes(
+    val nodes = findAllFileNodes(
       fileConsumer.getFiles(fileSource, List(".txt"))
     )
     val edges =
       EdgeIdentifier.createEdges(
-        NodeIdentifier.createNodePairs(
+        createNodePairs(
           LocalFileConsumer.getFiles(fileSource, List(".txt"))
         )
       )
     Graph(nodes, edges)
   }
 
-  def sanitizeFiles(fileNames: String): String = {
+  private def sanitizeFiles(fileNames: String): String = {
     fileNames.replace(".txt", "")
+  }
+
+  def findAllFileNodes(allFiles: List[File]): List[String] = {
+    for {
+    taggedNodes <- allFiles.map(file => findTaggedNodes(file))
+    fileNodes = allFiles.map(file => sanitizeFiles(file.getName))
+    allNodes <- fileNodes ++ taggedNodes
+    } yield allNodes
+  }
+
+  def createNodePairs(allFiles: List[File]): List[FileAndNodes] = {
+    allFiles.map(file =>
+      FileAndNodes(sanitizeFiles(file.getName), findTaggedNodes(file))
+    )
   }
 
   def getFileBody(fileName: String): Option[FileBody] = {
