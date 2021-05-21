@@ -2,7 +2,7 @@ import React, { useEffect, useRef, ReactNode } from "react";
 import ReactDOM from "react-dom"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from "@fortawesome/free-solid-svg-icons"
+import { faEdit, faTimes } from "@fortawesome/free-solid-svg-icons"
 
 
 type ModalProps = {
@@ -30,6 +30,7 @@ const Modal = ({ children, title, onClose }: ModalProps) => {
         }
     }, [])
 
+
     return thisElement.current ? ReactDOM.createPortal(
         <div className="ModalBackground" onClick={onClose}>
             <div className="ModalContent" onClick={e => e.stopPropagation()}>
@@ -38,6 +39,7 @@ const Modal = ({ children, title, onClose }: ModalProps) => {
                     <FontAwesomeIcon icon={faTimes} onClick={onClose} />
                 </div>
                 {children}
+
             </div>
         </div>,
         thisElement.current) : null
