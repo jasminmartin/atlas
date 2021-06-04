@@ -29,20 +29,18 @@ class TextGraphCreator(fileConsumer: FileConsumer, fileSource: String)
 
   def findAllFileNodes(allFiles: List[File]): List[String] = {
     for {
-    taggedNodes <- allFiles.map(file => findTaggedNodes(file))
-    fileNodes = allFiles.map(file => sanitizeFiles(file.getName))
-    allNodes = fileNodes ++ taggedNodes
-    combine <- combineStems(allNodes)
-    a = println(s"findAllFileNodes + $combine")
-    } yield combine
+      taggedNodes <- allFiles.map(file => findTaggedNodes(file))
+      fileNodes = allFiles.map(file => sanitizeFiles(file.getName))
+//      allNodes <- fileNodes ++ taggedNodes
+      allNodes <- combineStems(fileNodes ++ taggedNodes)
+      //      val b = println(allNodes)
+    } yield allNodes
   }
 
   def createNodePairs(allFiles: List[File]): List[FileAndNodes] = {
-    val b = allFiles.map(file =>
+    allFiles.map(file =>
       FileAndNodes(sanitizeFiles(file.getName), findTaggedNodes(file))
     )
-    println(s"createNodePairs + $b")
-    b
   }
 
   def getFileBody(fileName: String): Option[FileBody] = {

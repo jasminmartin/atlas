@@ -32,12 +32,13 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
 
       "On attempting stemming" should {
         "Normalise the stem" in { f => {
-          NodeIdentifier.removeSuffix("Meowing") shouldEqual "Meow"
-          NodeIdentifier.removeSuffix("Stressed") shouldEqual "Stress"
           NodeIdentifier.removeSuffix("Misses") shouldEqual "Miss"
+          NodeIdentifier.removeSuffix("Missed") shouldEqual "Miss"
+          NodeIdentifier.removeSuffix("Miss") shouldEqual "Miss"
+          NodeIdentifier.removeSuffix("Sleeps") shouldEqual "Sleep"
         }}
         "Store distinct stemmed names" in { f =>
-          NodeIdentifier.combineStems(List("Stressed","Stressing", "Stresses", "Bird", "Birding", "Potato")) shouldEqual List("Stress", "Bird", "Potato")
+          NodeIdentifier.combineStems(List("Stressed", "Stresses", "Bird", "Birds", "Potatos", "Potato")) shouldEqual List("Stress", "Bird", "Potato")
         }
       }
     }
