@@ -1,36 +1,33 @@
 package NetGenerationSpec
 
-import java.io.File
-import CommonModels._
 import FileIngestion.FileConsumer
 import NetGeneration._
+import org.mockito.MockitoSugar.mock
 import org.scalatest.Outcome
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
-import org.mockito.MockitoSugar.mock
 
-class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
+import java.io.File
+
+class StemmerSpec extends FixtureAnyWordSpec with Matchers {
 
   markup {
     "NodeIdentifierSpec ensures the Node identifier scans documents for Nodes which are identified by '[[]]"
   }
 
-  "NodeIdentifierSpec" when {
-    "Given documents" should {
-      "Identify nodes tagged in '[[]]'" in { f =>
-        NodeIdentifier.findTaggedNodes(f.sofaFile) shouldEqual List("sitting", "furniture")
-      }
-
-      "Identify all nodes (tagged and the file itself)" in { f =>
-        f.textCreator.findAllFileNodes(List(f.sofaFile)) shouldEqual List("sofa", "sitting", "furniture")
-      }
-
-      "Associate the tagged nodes '[[]]' to the file Node" in { f =>
-        f.textCreator.createNodePairs(List(f.sofaFile)) shouldEqual
-          List(FileAndTags("sofa", List("sitting", "furniture")))
+  "StemmerSpec" when {
+      "On attempting stemming" should {
+        "Normalise the stem" in { f => {
+          Stemmer.removeSuffix("Misses") shouldEqual "Miss"
+          Stemmer.removeSuffix("Missed") shouldEqual "Miss"
+          Stemmer.removeSuffix("Miss") shouldEqual "Miss"
+          Stemmer.removeSuffix("Sleeps") shouldEqual "Sleep"
+        }}
+        "Store distinct stemmed names" in { f =>
+          Stemmer.combineStems(List("Stressed", "Stresses", "Bird", "Birds", "Potatos", "Potato")) shouldEqual List("Stress", "Bird", "Potato")
+        }
       }
     }
-  }
 
   case class FixtureParam(sofaFile: File, mockFileConsumer: FileConsumer, textCreator: GraphCreator)
 

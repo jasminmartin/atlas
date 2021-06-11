@@ -15,28 +15,28 @@ class EdgeIdentifierSpec extends AnyWordSpec with Matchers {
     "Given a list of nodes" should {
       "Link nodes which are related" in {
         val linkedNodes = List(
-          FileAndNodes(
+          FileAndTags(
             "running.txt",
-            List("trainers", "protein", "sprint")
+            List("trainer", "protein", "sprint")
           ),
-          FileAndNodes(
+          FileAndTags(
             "weightlifting.txt",
-            List("trainers", "protein", "strength")
+            List("trainer", "protein", "strength")
           ),
-          FileAndNodes(
+          FileAndTags(
             "swimming.txt",
-            List("goggles", "protein", "water")
+            List("goggl", "protein", "water")
           )
         )
 
         EdgeIdentifier.createEdges(linkedNodes) shouldEqual List(
-            Edge("running.txt", "trainers"),
+            Edge("running.txt", "trainer"),
             Edge("running.txt", "protein"),
             Edge("running.txt", "sprint"),
-            Edge("weightlifting.txt", "trainers"),
+            Edge("weightlifting.txt", "trainer"),
             Edge("weightlifting.txt", "protein"),
             Edge("weightlifting.txt", "strength"),
-            Edge("swimming.txt", "goggles"),
+            Edge("swimming.txt", "goggl"),
             Edge("swimming.txt", "protein"),
             Edge("swimming.txt", "water")
           )

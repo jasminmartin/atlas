@@ -1,5 +1,0 @@
-package NetGenerationSpec
-
-class NetPropertySpec {
-
-}

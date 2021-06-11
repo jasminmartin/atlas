@@ -1,6 +1,6 @@
 package CommonModels
 
-case class FileAndNodes(file: String, tags: List[String])
+case class FileAndTags(file: String, tags: List[String])
 
 case class Edge(firstNode: String, secondNode: String)
 

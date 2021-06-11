@@ -3,7 +3,7 @@ package NodeExposureSpec
 import CommonModels.{Edge, Graph}
 import FileIngestion.LocalFileConsumer
 import NetExposure.RouteClient
-import NetGeneration.TextGraphCreator
+import NetGeneration.GraphCreator
 import akka.http.scaladsl.model.{ContentTypes, StatusCodes}
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
@@ -30,7 +30,8 @@ class LocalLinkSpec
             status shouldEqual StatusCodes.OK
             contentType shouldEqual ContentTypes.`application/json`
             val response = responseAs[Graph]
-            response shouldBe Graph(List("Animals", "sofa", "chair", "dog", "cat", "lion", "bathroom", "cat", "dog", "sitting", "furniture", "furniture", "cat"), List(Edge("Animals", "cat"), Edge("Animals", "dog"), Edge("sofa", "sitting"), Edge("sofa", "furniture"), Edge("chair", "furniture"), Edge("lion", "cat")))
+            response.nodes should contain allOf ("Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom","sitting", "furniture")
+            response.edges should contain allOf (Edge("Animal", "cat"), Edge("Animal", "dog"), Edge("sofa", "sitting"), Edge("sofa", "furniture"), Edge("chair", "furniture"), Edge("lion", "cat"))
           }
       }
     }
@@ -38,9 +39,9 @@ class LocalLinkSpec
 
   override protected def withFixture(test: OneArgTest): Outcome = {
     val localFileConsumer = LocalFileConsumer
-    val textGraphCreator =
-      new TextGraphCreator(localFileConsumer, "src/test/Resources/TestData")
-    val zettelkastenRoute: RouteClient = new RouteClient(textGraphCreator)
+    val GraphCreator =
+      new GraphCreator(localFileConsumer, "src/test/Resources/TestData")
+    val zettelkastenRoute: RouteClient = new RouteClient(GraphCreator)
 
     super.withFixture(
       test.toNoArgTest(
