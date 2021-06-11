@@ -1,11 +1,11 @@
 package NetExposure
 
 import CommonModels.FileBody
-import NetGeneration.TextGraphCreator
+import NetGeneration.GraphCreator
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directives, Route}
 
-class RouteClient(graphCreator: TextGraphCreator)
+class RouteClient(graphCreator: GraphCreator)
     extends Directives
     with CorsHandler {
 

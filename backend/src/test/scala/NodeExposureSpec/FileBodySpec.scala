@@ -3,7 +3,7 @@ package NodeExposureSpec
 import CommonModels.{Edge, FileBody, Graph}
 import FileIngestion.LocalFileConsumer
 import NetExposure.RouteClient
-import NetGeneration.TextGraphCreator
+import NetGeneration.GraphCreator
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
@@ -83,34 +83,26 @@ class FileBodySpec
           status shouldEqual StatusCodes.OK
           contentType shouldEqual ContentTypes.`application/json`
           val response = responseAs[Graph]
-          response shouldBe Graph(
-            List(
-              "Animals",
-              "sofa",
-              "chair",
-              "dog",
-              "cat",
-              "lion",
-              "bathroom",
-              "cat",
-              "dog",
-              "sitting",
-              "furniture",
-              "furniture",
-              "cat",
-              "sitting"
-            ),
-            List(
-              Edge("Animals", "cat"),
-              Edge("Animals", "dog"),
+          response.nodes should contain allOf ("Animal",
+          "sofa",
+          "chair",
+          "lion",
+          "bathroom",
+          "cat",
+          "dog",
+          "furniture",
+          "sitting")
+          response.edges should contain allOf
+            (
+              Edge("Animal", "cat"),
+              Edge("Animal", "dog"),
               Edge("sofa", "sitting"),
               Edge("sofa", "furniture"),
               Edge("chair", "furniture"),
               Edge("lion", "cat"),
               Edge("bathroom","sitting")
-            )
-          )
 
+          )
         }
 
         val revert: Json =
@@ -126,9 +118,9 @@ class FileBodySpec
 
   override protected def withFixture(test: OneArgTest): Outcome = {
     val localFileConsumer = LocalFileConsumer
-    val textGraphCreator =
-      new TextGraphCreator(localFileConsumer, "src/test/Resources/TestData")
-    val zettelkastenRoute: RouteClient = new RouteClient(textGraphCreator)
+    val GraphCreator =
+      new GraphCreator(localFileConsumer, "src/test/Resources/TestData")
+    val zettelkastenRoute: RouteClient = new RouteClient(GraphCreator)
 
     super.withFixture(
       test.toNoArgTest(

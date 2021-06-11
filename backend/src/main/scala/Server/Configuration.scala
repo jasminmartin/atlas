@@ -2,7 +2,7 @@ package Server
 
 import FileIngestion.LocalFileConsumer
 import NetExposure.RouteClient
-import NetGeneration.TextGraphCreator
+import NetGeneration.GraphCreator
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 
@@ -15,6 +15,6 @@ object Configuration extends ActorSystemConfig {
 
   val appConfig: ZetConfig = ConfigSource.default.loadOrThrow[ZetConfig]
 
-  val graphCreator = new TextGraphCreator(LocalFileConsumer, "src/test/Resources/TestData")
+  val graphCreator = new GraphCreator(LocalFileConsumer, "src/test/Resources/TestData")
   val allRoutes = new RouteClient(graphCreator)
 }

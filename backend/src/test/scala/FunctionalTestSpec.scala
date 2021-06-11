@@ -1,7 +1,7 @@
 import java.io.File
-import CommonModels.{Edge, FileAndNodes}
+import CommonModels.{Edge, FileAndTags}
 import FileIngestion.{FileConsumer, LocalFileConsumer}
-import NetGeneration.{EdgeIdentifier, NodeIdentifier, TextGraphCreator}
+import NetGeneration.{EdgeIdentifier, NodeIdentifier, GraphCreator}
 import org.mockito.MockitoSugar.mock
 import org.scalatest.Outcome
 import org.scalatest.matchers.should.Matchers
@@ -23,36 +23,21 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
         val fileTagList: Seq[String] =
           f.textCreator.findAllFileNodes(filteredFiles)
         fileTagList should contain theSameElementsAs
-          List(
-            "Animals",
-            "sofa",
-            "chair",
-            "dog",
-            "cat",
-            "lion",
-            "bathroom",
-            "cat",
-            "dog",
-            "sitting",
-            "furniture",
-            "furniture",
-            "cat"
-          )
-      }
+          List("Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "sitting", "furniture", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "furniture", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom")       }
     }
   }
 
-  case class FixtureParam(nestedDirectoryStructure: String, textCreator: TextGraphCreator)
+  case class FixtureParam(nestedDirectoryStructure: String, textCreator: GraphCreator)
 
   override protected def withFixture(test: OneArgTest): Outcome = {
     val nestedDirectoryStructure: String = "src/test/Resources/TestData"
     val testSource = "src/test/Resources/TestData/household"
     val mockFileConsumer = mock[FileConsumer]
-    val textCreator = new TextGraphCreator(mockFileConsumer, testSource)
+    val textCreator = new GraphCreator(mockFileConsumer, testSource)
 
     try {
       this.withFixture(
-        test.toNoArgTest(FixtureParam(nestedDirectoryStructure: String, textCreator: TextGraphCreator))
+        test.toNoArgTest(FixtureParam(nestedDirectoryStructure: String, textCreator: GraphCreator))
       )
     }
   }

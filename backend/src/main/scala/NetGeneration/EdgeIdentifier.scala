@@ -1,10 +1,12 @@
 package NetGeneration
 
 import CommonModels._
+import NetGeneration.Stemmer.{combineStems, removeSuffix}
 
 object EdgeIdentifier {
 
-  def createEdges(fileAndTags: List[FileAndNodes]): List[Edge] = {
-    fileAndTags.flatten(ft => ft.tags.map(tag => Edge(ft.file, tag)))
+  def createEdges(fileAndTags: List[FileAndTags]): List[Edge] = {
+    fileAndTags.flatMap(ft => combineStems(ft.tags)
+      .map(stemmedTags => Edge(removeSuffix(ft.file), stemmedTags)))
   }
 }
