@@ -19,6 +19,5 @@ object Stemmer {
       case str if str.endsWith("s") && str(str.length -2) !='s' => str.dropRight(1)
       case str => str
     }
-    //    str.tap{res => println(res)}
   }
 }

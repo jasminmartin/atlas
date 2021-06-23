@@ -2,7 +2,7 @@ package NetGenerationSpec
 
 import java.io.File
 import CommonModels._
-import FileIngestion.FileConsumer
+import FileIngestion.{FileConsumer, LocalFileConsumer}
 import NetGeneration._
 import org.scalatest.Outcome
 import org.scalatest.matchers.should.Matchers
@@ -29,6 +29,19 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
         f.textCreator.createNodePairs(List(f.sofaFile)) shouldEqual
           List(FileAndTags("sofa", List("sitting", "furniture")))
       }
+
+      "Update nodes with new body information" in { f =>
+        f.textCreator.updateFileBody("sofa", "Sofas are for [[sitting]] on.\nThey are comfy 90% of the time.\nOr sometimes not.\nThey are a type of [[furniture]]. They are [[comfy]]")
+        f.textCreator.createNodePairs(List(f.sofaFile)) shouldEqual
+          List(FileAndTags("sofa", List("sitting", "furniture","comfy")))
+        f.textCreator.updateFileBody("sofa", "Sofas are for [[sitting]] on.\nThey are comfy 90% of the time.\nOr sometimes not.\nThey are a type of [[furniture]].")
+      }
+
+      "Create new nodes" in { f =>
+        f.textCreator.updateFileBody("table", "Tables are often next to the [[sofa]].\nThey are [[furniture]].")
+        f.textCreator.createNodePairs(List(f.sofaFile)) shouldEqual
+          List(FileAndTags("sofa", List("sitting", "furniture","comfy", "table")))
+      }
     }
   }
 
@@ -37,11 +50,12 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
   override protected def withFixture(test: OneArgTest): Outcome = {
     val sofaFile = new File("src/test/Resources/TestData/household/sofa.txt")
     val testSource = "src/test/Resources/TestData/household"
-    val mockFileConsumer = mock[FileConsumer]
-    val textCreator = new GraphCreator(mockFileConsumer, testSource)
+    val fileConsumer = LocalFileConsumer
+
+    val textCreator = new GraphCreator(fileConsumer, testSource)
     try {
       this.withFixture(test.toNoArgTest(
-        FixtureParam(sofaFile, mockFileConsumer, textCreator)))
+        FixtureParam(sofaFile, fileConsumer, textCreator)))
     }
   }
 }
