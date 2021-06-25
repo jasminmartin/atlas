@@ -1,13 +1,14 @@
 package NetGenerationSpec
 
-import java.io.File
 import CommonModels._
 import FileIngestion.{FileConsumer, LocalFileConsumer}
 import NetGeneration._
-import org.scalatest.Outcome
+import org.scalatest.concurrent.Eventually.eventually
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
-import org.mockito.MockitoSugar.mock
+import org.scalatest.{Assertion, Outcome}
+
+import java.io.File
 
 class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
 
@@ -18,34 +19,54 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
   "NodeIdentifierSpec" when {
     "Given documents" should {
       "Identify nodes tagged in '[[]]'" in { f =>
-        NodeIdentifier.findTaggedNodes(f.sofaFile) shouldEqual List("sitting", "furniture")
+        NodeIdentifier
+          .findTaggedNodes(f.sofaFile) shouldEqual List("sitting", "furniture")
       }
 
       "Identify all nodes (tagged and the file itself)" in { f =>
-        f.textCreator.findAllFileNodes(List(f.sofaFile)) shouldEqual List("sofa", "sitting", "furniture")
+        f.textCreator.findAllFileNodes(List(f.sofaFile)) shouldEqual List(
+          "sofa",
+          "sitting",
+          "furniture"
+        )
       }
 
       "Associate the tagged nodes '[[]]' to the file Node" in { f =>
-        f.textCreator.createNodePairs(List(f.sofaFile)) shouldEqual
-          List(FileAndTags("sofa", List("sitting", "furniture")))
+        val a: Assertion =
+          f.textCreator.createNodePairs(List(f.sofaFile)) shouldEqual
+            List(FileAndTags("sofa", List("sitting", "furniture")))
       }
 
       "Update nodes with new body information" in { f =>
-        f.textCreator.updateFileBody("sofa", "Sofas are for [[sitting]] on.\nThey are comfy 90% of the time.\nOr sometimes not.\nThey are a type of [[furniture]]. They are [[comfy]]")
+        f.textCreator.updateFileBody(
+          "sofa",
+          "Sofas are for [[sitting]] on.\nThey are comfy 90% of the time.\nOr sometimes not.\nThey are a type of [[furniture]]. They are [[comfy]]"
+        )
         f.textCreator.createNodePairs(List(f.sofaFile)) shouldEqual
-          List(FileAndTags("sofa", List("sitting", "furniture","comfy")))
-        f.textCreator.updateFileBody("sofa", "Sofas are for [[sitting]] on.\nThey are comfy 90% of the time.\nOr sometimes not.\nThey are a type of [[furniture]].")
+          List(FileAndTags("sofa", List("sitting", "furniture", "comfy")))
+        f.textCreator.updateFileBody(
+          "sofa",
+          "Sofas are for [[sitting]] on.\nThey are comfy 90% of the time.\nOr sometimes not.\nThey are a type of [[furniture]]."
+        )
       }
 
       "Create new nodes" in { f =>
-        f.textCreator.updateFileBody("table", "Tables are often next to the [[sofa]].\nThey are [[furniture]].")
-        f.textCreator.createNodePairs(List(f.sofaFile)) shouldEqual
-          List(FileAndTags("sofa", List("sitting", "furniture","comfy", "table")))
+        val updatedGraph: Graph = f.textCreator.updateFileBody(
+          "table",
+          "Tables are often next to the [[sofa]].\nThey are [[furniture]]."
+        )
+        eventually {
+          updatedGraph.edges.exists(x => x.firstNode == "table") shouldBe true
+        }
       }
     }
   }
 
-  case class FixtureParam(sofaFile: File, mockFileConsumer: FileConsumer, textCreator: GraphCreator)
+  case class FixtureParam(
+      sofaFile: File,
+      mockFileConsumer: FileConsumer,
+      textCreator: GraphCreator
+  )
 
   override protected def withFixture(test: OneArgTest): Outcome = {
     val sofaFile = new File("src/test/Resources/TestData/household/sofa.txt")
@@ -54,8 +75,9 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
 
     val textCreator = new GraphCreator(fileConsumer, testSource)
     try {
-      this.withFixture(test.toNoArgTest(
-        FixtureParam(sofaFile, fileConsumer, textCreator)))
+      this.withFixture(
+        test.toNoArgTest(FixtureParam(sofaFile, fileConsumer, textCreator))
+      )
     }
   }
 }

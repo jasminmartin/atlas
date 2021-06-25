@@ -14,13 +14,14 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
   def createGraph: Graph = {
     val nodes: List[String] = findAllFileNodes(
       fileConsumer.getFiles(fileSource, List(".txt"))
-    ).tap(x => println(s"here look +$x"))
+    )
     val edges: List[Edge] =
-      EdgeIdentifier.createEdges(
-        createNodePairs(
-          LocalFileConsumer.getFiles(fileSource, List(".txt"))
+      EdgeIdentifier
+        .createEdges(
+          createNodePairs(
+            LocalFileConsumer.getFiles(fileSource, List(".txt"))
+          )
         )
-      ).tap(x => println(s"boo boo +$x"))
     Graph(nodes.distinct, edges)
   }
 
@@ -59,12 +60,22 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
     val nameWithExtension = fileName + ".txt"
     LocalFileConsumer
       .getFiles("src/test/Resources/TestData", List(".txt"))
-      .find(_.getName == nameWithExtension)
-      .foreach(file => {
+      .find(_.getName == nameWithExtension) match {
+      case Some(file) => {
         val bw = new BufferedWriter(new FileWriter(file))
         bw.write(body)
         bw.close()
-      })
+      }
+      case None => {
+        val bw = new BufferedWriter(
+          new FileWriter(
+            "src/test/Resources/TestData/household/" + nameWithExtension
+          )
+        )
+        bw.write(body)
+        bw.close()
+      }
+    }
     createGraph
   }
 }
