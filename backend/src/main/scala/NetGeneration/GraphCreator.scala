@@ -6,6 +6,7 @@ import NetGeneration.NodeIdentifier.findTaggedNodes
 import NetGeneration.Stemmer.combineStems
 
 import java.io.{BufferedWriter, File, FileWriter}
+import java.nio.file.NoSuchFileException
 import scala.io.Source
 import scala.util.chaining.scalaUtilChainingOps
 
@@ -77,5 +78,15 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
       }
     }
     createGraph
+  }
+
+  def deleteFile(fileName: String) = {
+    val nameWithExtension = fileName + ".txt"
+    LocalFileConsumer
+      .getFiles("src/test/Resources/TestData", List(".txt"))
+      .find(_.getName == nameWithExtension) match {
+      case Some(file) => file.delete()
+      case None => false
+    }
   }
 }
