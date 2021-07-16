@@ -1,6 +1,7 @@
 package NetGeneration
 
 object Stemmer {
+//Not using this right now
 
   def combineStems(nodes: List[String]): List[String] = {
     nodes.map(name => removeSuffix(name)).distinct

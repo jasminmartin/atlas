@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import './App.css';
 import Graph, { Node, Edge } from './app/sections/Graph';
+import Button from './app/sections/Button';
+import Modal from "./app/sections/Modal";
+import Document from "./app/sections/Document";
 
 const baseURL = "http://localhost:4024"
 
@@ -23,6 +26,7 @@ function App({ }: AppProps) {
     edges: [],
   })
 
+  const [isOpen, setIsOpen] = useState<Boolean>(false)
 
   useEffect(() => {
     async function f(): Promise<void> {
@@ -34,10 +38,17 @@ function App({ }: AppProps) {
   }, [baseURL, setGraph])
 
 
-  return <Graph nodes={graph.nodes.map(name => ({ id: name, label: name, width: 100, height: 100 }))} edges={graph.edges.map(edge => ({
+  return (
+  <>
+  {isOpen && <Modal title="New File" onClose={()=>setIsOpen(false)}>
+  <Document body="new body" name="new name"/>
+  </Modal>}
+  <Graph nodes={graph.nodes.map(name => ({ id: name, label: name, width: 100, height: 100 }))} edges={graph.edges.map(edge => ({
     from: edge.firstNode,
     to: edge.secondNode,
-  }))} />;
+  }))} />
+  <Button buttonName="Create New File" onClick={()=>setIsOpen(true)}/>
+  </>);
 }
 
 export default App;

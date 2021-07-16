@@ -48,6 +48,7 @@ type GraphProps = {
 const Loading = () => <p>Loading...</p>
 
 export const Graph = ({ nodes, edges }: GraphProps) => {
+  console.log("Rendering Graph")
   const currentGraph = new dagre.graphlib.Graph();
 
   buildGraph(currentGraph, nodes, edges);
@@ -66,8 +67,9 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
       setFetch(await fetchFile(lastClicked))
     }
     f()
-  }, [lastClicked])
+  }, [lastClicked, fetch])
 
+  console.dir(fetch)
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -120,7 +122,7 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
         {lastClicked && (
           <Modal title={lastClicked} onClose={() => setLastClicked(undefined)}>
             {
-              fetch && <Document {...fetch} />
+              fetch ? <Document key={1} {...fetch} /> : <Document key={0} name={lastClicked} />
             }
           </Modal>
         )}

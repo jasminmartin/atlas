@@ -1,14 +1,11 @@
 package NetGeneration
 
-import CommonModels.{Edge, FileAndTags, FileBody, Graph}
+import CommonModels.{Edge, FileBody, Graph}
 import FileIngestion.{FileConsumer, LocalFileConsumer}
-import NetGeneration.NodeIdentifier.findTaggedNodes
-import NetGeneration.Stemmer.combineStems
+import NetGeneration.NodeIdentifier.{createNodePairs, findAllFileNodes}
 
-import java.io.{BufferedWriter, File, FileWriter}
-import java.nio.file.NoSuchFileException
+import java.io.{BufferedWriter, FileWriter}
 import scala.io.Source
-import scala.util.chaining.scalaUtilChainingOps
 
 class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
 
@@ -16,6 +13,7 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
     val nodes: List[String] = findAllFileNodes(
       fileConsumer.getFiles(fileSource, List(".txt"))
     )
+    println(s"all of the nodes ${nodes}")
     val edges: List[Edge] =
       EdgeIdentifier
         .createEdges(
@@ -23,33 +21,24 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
             LocalFileConsumer.getFiles(fileSource, List(".txt"))
           )
         )
+
+    println(s"all of the edges ${edges}")
+
     Graph(nodes.distinct, edges)
   }
 
-  private def sanitizeFiles(fileNames: String): String = {
-    fileNames.replace(".txt", "")
-  }
-
-  def findAllFileNodes(allFiles: List[File]): List[String] = {
-    for {
-      taggedNodes <- allFiles.map(file => findTaggedNodes(file))
-      fileNodes = allFiles.map(file => sanitizeFiles(file.getName))
-      allNodes <- combineStems(fileNodes ++ taggedNodes)
-    } yield allNodes
-  }
-
-  def createNodePairs(allFiles: List[File]): List[FileAndTags] = {
-    allFiles.map(file =>
-      FileAndTags(sanitizeFiles(file.getName), findTaggedNodes(file))
-    )
-  }
 
   def getFileBody(fileName: String): Option[FileBody] = {
+    println(s"GETING FILE BODY $fileName")
     val nameWithExtension = fileName + ".txt"
     LocalFileConsumer
       .getFiles("src/test/Resources/TestData", List(".txt"))
-      .find(_.getName == nameWithExtension)
+      .find(file => {
+        println(s"CHECKING ${file.getName} AGAINST ${nameWithExtension}")
+        file.getName == nameWithExtension
+      })
       .map(file => {
+        println(s"FOUND ${file.getAbsolutePath}")
         val bufferFile = Source.fromFile(file)
         val stringFile = bufferFile.mkString
         bufferFile.close()
@@ -84,7 +73,7 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
     val nameWithExtension = fileName + ".txt"
     LocalFileConsumer
       .getFiles("src/test/Resources/TestData", List(".txt"))
-      .find(_.getName == nameWithExtension) match {
+      .find(file => file.getName == nameWithExtension) match {
       case Some(file) => file.delete()
       case None => false
     }
