@@ -1,0 +1,12 @@
+version: '2.4'
+services:
+  zettelkasten:
+    image: zettelkasten:0.1
+    restart: always
+    ports:
+      - 4024:4024
+  watchlist-local-nft:
+    image: zettelkasten-nft:0.1
+    environment:
+      GATLING_SIMULATION_CLASS: "com.sky.watchlist.nft.simulations.BasicSimulation"
+      API_HOST: watchlist-api
