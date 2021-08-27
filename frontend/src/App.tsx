@@ -40,6 +40,7 @@ function App({ }: AppProps) {
 
   return (
   <>
+    <Button buttonName="Create New File" onClick={()=>setIsOpen(true)}/>
   {isOpen && <Modal title="New File" onClose={()=>setIsOpen(false)}>
   <Document body="new body" name="new name"/>
   </Modal>}
@@ -47,7 +48,6 @@ function App({ }: AppProps) {
     from: edge.firstNode,
     to: edge.secondNode,
   }))} />
-  <Button buttonName="Create New File" onClick={()=>setIsOpen(true)}/>
   </>);
 }
 
