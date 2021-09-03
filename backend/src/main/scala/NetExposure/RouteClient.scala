@@ -32,6 +32,10 @@ class RouteClient(graphCreator: GraphCreator)
                 complete(graphCreator.updateFileBody(fileName, request.body))
               }
             }
+            ~
+            (delete & path("file-body" / Segment)) { fileName =>
+                complete(if (graphCreator.deleteFile(fileName)) {StatusCodes.NoContent} else StatusCodes.NotFound)
+            }
         )
       )
     )

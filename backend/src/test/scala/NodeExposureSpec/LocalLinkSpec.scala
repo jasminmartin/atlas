@@ -30,8 +30,8 @@ class LocalLinkSpec
             status shouldEqual StatusCodes.OK
             contentType shouldEqual ContentTypes.`application/json`
             val response = responseAs[Graph]
-            response.nodes should contain allOf ("Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom","sitting", "furniture")
-            response.edges should contain allOf (Edge("Animal", "cat"), Edge("Animal", "dog"), Edge("sofa", "sitting"), Edge("sofa", "furniture"), Edge("chair", "furniture"), Edge("lion", "cat"))
+            response.nodes should contain allOf ("Animals", "sofa", "chair", "dog", "cat", "lion", "bathroom","sitting", "furniture")
+            response.edges should contain allOf (Edge("Animals", "cat"), Edge("Animals", "dog"), Edge("sofa", "sitting"), Edge("sofa", "furniture"), Edge("chair", "furniture"), Edge("lion", "cat"))
           }
       }
     }

@@ -12,6 +12,7 @@ export const fetchFile = async (fileName: string) => {
         method: 'GET'
     })
     const body = await resp.json()
+    console.log("Getting file - " + body)
     return body
 }
 
@@ -26,5 +27,15 @@ export const putFile = async (fileName: string, body: String) => {
             body
         })
     })
+    console.log("Putting file - " + put)
     return put
+}
+
+export const deleteFile = async (fileName: string) => {
+    const resp = await fetch(`${baseURL}/file-body/${fileName}`, {
+        method: 'DELETE'
+    })
+    const body = await resp
+    console.log("Deleting file - " + resp)
+    return body
 }

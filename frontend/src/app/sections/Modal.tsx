@@ -33,9 +33,9 @@ const Modal = ({ children, title, onClose }: ModalProps) => {
 
     return thisElement.current ? ReactDOM.createPortal(
         <div className="ModalBackground" onClick={onClose}>
-            <div className="ModalContent" onClick={e => e.stopPropagation()}>
+            <div className="ModalContent" style={{
+                width: "25%", height: "62%", paddingRight: "3%"}} onClick={e => e.stopPropagation()}>
                 <div style={{ display: "flex" }}>
-                    <h3 style={{ margin: 0, flex: 10, textAlign: "center" }}>{capitalizeFirstLetter(title || "")}</h3>
                     <FontAwesomeIcon icon={faTimes} onClick={onClose} />
                 </div>
                 {children}

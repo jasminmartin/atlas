@@ -48,8 +48,9 @@ type GraphProps = {
 const Loading = () => <p>Loading...</p>
 
 export const Graph = ({ nodes, edges }: GraphProps) => {
+  console.log("Rendering Graph")
   const currentGraph = new dagre.graphlib.Graph();
-
+  
   buildGraph(currentGraph, nodes, edges);
   const nodeWidth = 100
   const nodePadding = 8
@@ -68,10 +69,11 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
     f()
   }, [lastClicked])
 
+  console.dir(fetch)
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <svg viewBox="0 0 1000 1000">
+        <svg viewBox="0 0 1000 1000" >
           {currentGraph.edges().map((edge) => {
             const fromNode = currentGraph.node(edge.v);
             const toNode = currentGraph.node(edge.w);
@@ -91,7 +93,7 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
             .map((node) => (
               <>
                 <circle
-                  style={{ fill: "lavender" }}
+                  style={circleStyle}
                   cx={node.x}
                   cy={node.y}
                   r={nodeWidth / 2}>
@@ -104,14 +106,22 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
                   height={nodeWidth / 2}>
                   <div
                     onClick={() => setLastClicked(node.label)}
-                    title={node.label} style={{
+                     style={{
                       width: '100%',
                       height: '100%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      cursor: "pointer",
                     }}>
-                    <label>{node.label}</label>
+                    <label style={{
+                      cursor: "pointer",
+                      fontSize: "60%",
+                      overflow:"hidden",
+                      whiteSpace:"nowrap",
+                      textOverflow:"ellipsis"
+                    }}
+                    >{node.label}</label>
                   </div>
                 </foreignObject>
               </>
@@ -120,7 +130,7 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
         {lastClicked && (
           <Modal title={lastClicked} onClose={() => setLastClicked(undefined)}>
             {
-              fetch && <Document {...fetch} />
+              fetch ? <Document key={1} {...fetch} /> : <Document key={0} name={lastClicked} />
             }
           </Modal>
         )}
@@ -130,3 +140,17 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
 };
 
 export default Graph;
+
+const circleStyle = {
+  fill: "#00B2ED",
+  border: "none",
+  color: "white",
+  textAlign: "center" as const,
+  textDecoration: "none",
+  display: "flex",
+  fontSize: "16px",
+  cursor: "pointer",
+  margin: "4px 2px",
+  padding: "100px",
+  borderRadius: "50"
+};

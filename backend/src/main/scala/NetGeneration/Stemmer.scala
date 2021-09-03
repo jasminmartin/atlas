@@ -1,6 +1,7 @@
 package NetGeneration
 
 object Stemmer {
+//Not using this right now
 
   def combineStems(nodes: List[String]): List[String] = {
     nodes.map(name => removeSuffix(name)).distinct
@@ -19,6 +20,5 @@ object Stemmer {
       case str if str.endsWith("s") && str(str.length -2) !='s' => str.dropRight(1)
       case str => str
     }
-    //    str.tap{res => println(res)}
   }
 }

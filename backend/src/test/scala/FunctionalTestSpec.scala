@@ -20,14 +20,89 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
           LocalFileConsumer.isDirectory(f.nestedDirectoryStructure)
         val filteredFiles: List[File] =
           LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt"))
+        val nodeIdentifier = NodeIdentifier
+
         val fileTagList: Seq[String] =
-          f.textCreator.findAllFileNodes(filteredFiles)
+          nodeIdentifier.findAllFileNodes(filteredFiles)
         fileTagList should contain theSameElementsAs
-          List("Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "sitting", "furniture", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "furniture", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom", "Animal", "sofa", "chair", "dog", "cat", "lion", "bathroom")       }
+          List(
+            "Animals",
+            "table",
+            "sofa",
+            "chair",
+            "dog",
+            "cat",
+            "lion",
+            "bathroom",
+            "Animals",
+            "table",
+            "sofa",
+            "chair",
+            "dog",
+            "cat",
+            "lion",
+            "bathroom",
+            "furniture",
+            "Animals",
+            "table",
+            "sofa",
+            "chair",
+            "dog",
+            "cat",
+            "lion",
+            "bathroom",
+            "sitting",
+            "furniture",
+            "Animals",
+            "table",
+            "sofa",
+            "chair",
+            "dog",
+            "cat",
+            "lion",
+            "bathroom",
+            "furniture",
+            "Animals",
+            "table",
+            "sofa",
+            "chair",
+            "dog",
+            "cat",
+            "lion",
+            "bathroom",
+            "Animals",
+            "table",
+            "sofa",
+            "chair",
+            "dog",
+            "cat",
+            "lion",
+            "bathroom",
+            "Animals",
+            "table",
+            "sofa",
+            "chair",
+            "dog",
+            "cat",
+            "lion",
+            "bathroom",
+            "Animals",
+            "table",
+            "sofa",
+            "chair",
+            "dog",
+            "cat",
+            "lion",
+            "bathroom"
+          )
+      }
     }
   }
 
-  case class FixtureParam(nestedDirectoryStructure: String, textCreator: GraphCreator)
+  case class FixtureParam(
+      nestedDirectoryStructure: String,
+      textCreator: GraphCreator
+  )
 
   override protected def withFixture(test: OneArgTest): Outcome = {
     val nestedDirectoryStructure: String = "src/test/Resources/TestData"
@@ -37,7 +112,12 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
 
     try {
       this.withFixture(
-        test.toNoArgTest(FixtureParam(nestedDirectoryStructure: String, textCreator: GraphCreator))
+        test.toNoArgTest(
+          FixtureParam(
+            nestedDirectoryStructure: String,
+            textCreator: GraphCreator
+          )
+        )
       )
     }
   }
