@@ -83,7 +83,7 @@ class FileBodySpec
           status shouldEqual StatusCodes.OK
           contentType shouldEqual ContentTypes.`application/json`
           val response = responseAs[Graph]
-          response.nodes should contain allOf ("Animal",
+          response.nodes should contain allOf ("Animals",
           "sofa",
           "chair",
           "lion",
@@ -94,8 +94,8 @@ class FileBodySpec
           "sitting")
           response.edges should contain allOf
             (
-              Edge("Animal", "cat"),
-              Edge("Animal", "dog"),
+              Edge("Animals", "cat"),
+              Edge("Animals", "dog"),
               Edge("sofa", "sitting"),
               Edge("sofa", "furniture"),
               Edge("chair", "furniture"),

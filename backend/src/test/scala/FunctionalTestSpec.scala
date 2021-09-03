@@ -20,11 +20,13 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
           LocalFileConsumer.isDirectory(f.nestedDirectoryStructure)
         val filteredFiles: List[File] =
           LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt"))
+        val nodeIdentifier = NodeIdentifier
+
         val fileTagList: Seq[String] =
-          f.textCreator.findAllFileNodes(filteredFiles)
+          nodeIdentifier.findAllFileNodes(filteredFiles)
         fileTagList should contain theSameElementsAs
           List(
-            "Animal",
+            "Animals",
             "table",
             "sofa",
             "chair",
@@ -32,7 +34,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
             "cat",
             "lion",
             "bathroom",
-            "Animal",
+            "Animals",
             "table",
             "sofa",
             "chair",
@@ -41,7 +43,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
             "lion",
             "bathroom",
             "furniture",
-            "Animal",
+            "Animals",
             "table",
             "sofa",
             "chair",
@@ -51,7 +53,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
             "bathroom",
             "sitting",
             "furniture",
-            "Animal",
+            "Animals",
             "table",
             "sofa",
             "chair",
@@ -60,7 +62,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
             "lion",
             "bathroom",
             "furniture",
-            "Animal",
+            "Animals",
             "table",
             "sofa",
             "chair",
@@ -68,7 +70,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
             "cat",
             "lion",
             "bathroom",
-            "Animal",
+            "Animals",
             "table",
             "sofa",
             "chair",
@@ -76,7 +78,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
             "cat",
             "lion",
             "bathroom",
-            "Animal",
+            "Animals",
             "table",
             "sofa",
             "chair",
@@ -84,7 +86,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
             "cat",
             "lion",
             "bathroom",
-            "Animal",
+            "Animals",
             "table",
             "sofa",
             "chair",

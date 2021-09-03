@@ -31,8 +31,7 @@ object NodeIdentifier {
 
   def createNodePairs(allFiles: List[File]): List[FileAndTags] = {
     allFiles.map(file =>
-    FileAndTags(sanitizeFiles(file.getName), findTaggedNodes(file))
-    )
+      FileAndTags(sanitizeFiles(file.getName), findTaggedNodes(file)))
   }
 
   private def stripNode(nodeName: String): String = {

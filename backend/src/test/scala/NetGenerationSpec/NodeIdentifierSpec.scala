@@ -24,7 +24,8 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
       }
 
       "Identify all nodes (tagged and the file itself)" in { f =>
-        f.textCreator.findAllFileNodes(List(f.sofaFile)) shouldEqual List(
+      val nodeIdentifier = NodeIdentifier
+        nodeIdentifier.findAllFileNodes(List(f.sofaFile)) shouldEqual List(
           "sofa",
           "sitting",
           "furniture"
@@ -32,8 +33,8 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
       }
 
       "Associate the tagged nodes '[[]]' to the file Node" in { f =>
-        val a: Assertion =
-          f.textCreator.createNodePairs(List(f.sofaFile)) shouldEqual
+        val nodeIdentifier = NodeIdentifier
+        nodeIdentifier.createNodePairs(List(f.sofaFile)) shouldEqual
             List(FileAndTags("sofa", List("sitting", "furniture")))
       }
 
@@ -42,7 +43,8 @@ class NodeIdentifierSpec extends FixtureAnyWordSpec with Matchers {
           "sofa",
           "Sofas are for [[sitting]] on.\nThey are comfy 90% of the time.\nOr sometimes not.\nThey are a type of [[furniture]]. They are [[comfy]]"
         )
-        f.textCreator.createNodePairs(List(f.sofaFile)) shouldEqual
+        val nodeIdentifier = NodeIdentifier
+        nodeIdentifier.createNodePairs(List(f.sofaFile)) shouldEqual
           List(FileAndTags("sofa", List("sitting", "furniture", "comfy")))
         f.textCreator.updateFileBody(
           "sofa",
