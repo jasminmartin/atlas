@@ -52,8 +52,23 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
   const currentGraph = new dagre.graphlib.Graph();
   
   buildGraph(currentGraph, nodes, edges);
-  const nodeWidth = 100
-  const nodePadding = 8
+
+  const [zoomFactor, setZoomFactor] = useState(1.0)
+  const [xOffset, setXOffSet] = useState(0)
+  const [yOffset, setYOffSet] = useState(0)
+
+  const handlWheel = event => {
+    console.dir(event)
+    event.preventDefault()
+    const {pageX, pageY} = event
+
+    
+    const newFactor = zoomFactor + event.deltaY * - 0.01
+    setZoomFactor(Math.min(Math.max(.125, newFactor), 4))
+  }
+
+  const nodeWidth = 100 * zoomFactor
+  const nodePadding = nodeWidth / 10
   const [lastClicked, setLastClicked] = useState<string | undefined>(undefined)
   const [fetch, setFetch] = useState<File | undefined>(undefined)
 
@@ -72,17 +87,17 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
   console.dir(fetch)
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} onWheel={handlWheel}>
         <svg viewBox="0 0 1000 1000" >
           {currentGraph.edges().map((edge) => {
             const fromNode = currentGraph.node(edge.v);
             const toNode = currentGraph.node(edge.w);
             return (
               <line
-                x1={fromNode.x}
-                y1={fromNode.y}
-                x2={toNode.x}
-                y2={toNode.y}
+                x1={(fromNode.x * zoomFactor) + xOffset}
+                y1={fromNode.y * zoomFactor}
+                x2={toNode.x * zoomFactor}
+                y2={toNode.y * zoomFactor}
                 stroke="black"
               />
             );
@@ -94,14 +109,14 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
               <>
                 <circle
                   style={circleStyle}
-                  cx={node.x}
-                  cy={node.y}
+                  cx={node.x * zoomFactor}
+                  cy={node.y * zoomFactor}
                   r={nodeWidth / 2}>
                 </circle>
                 <foreignObject
                   onClick={() => setLastClicked(node.label)}
-                  x={node.x - (nodeWidth / 4)}
-                  y={node.y - (nodeWidth / 4)}
+                  x={node.x * zoomFactor - (nodeWidth / 4)}
+                  y={node.y * zoomFactor - (nodeWidth / 4)}
                   width={nodeWidth / 2}
                   height={nodeWidth / 2}>
                   <div
@@ -116,7 +131,7 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
                     }}>
                     <label style={{
                       cursor: "pointer",
-                      fontSize: "60%",
+                      fontSize: `${zoomFactor * 60}%`,
                       overflow:"hidden",
                       whiteSpace:"nowrap",
                       textOverflow:"ellipsis"
