@@ -2,11 +2,11 @@ package FileIngestionSpec
 
 import FileIngestion.LocalFileConsumer
 import Utils.AtlasFileUtil
-import org.scalatest.BeforeAndAfter
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class FileConsumerSpec extends AnyWordSpec with Matchers with BeforeAndAfter {
+class FileConsumerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   markup {
     "FileConsumerSpec checks that the FileConsumer can list files from directories"
@@ -14,12 +14,12 @@ class FileConsumerSpec extends AnyWordSpec with Matchers with BeforeAndAfter {
 
   val utils = new AtlasFileUtil
 
-  before {
+  override def beforeEach {
     utils.allFileContents.map(pair => utils.createFileStructure(pair._1, pair._2))
   }
 
-  after {
-    utils.deleteAllFiles
+  override def afterEach {
+    utils.deleteFilesInTestinDir
   }
 
   "FileConsumerSpec" when {

@@ -29,16 +29,13 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
 
 
   def getFileBody(fileName: String): Option[FileBody] = {
-    println(s"GETING FILE BODY $fileName")
     val nameWithExtension = fileName + ".txt"
     LocalFileConsumer
-      .getFiles("src/test/Resources/TestData", List(".txt"))
+      .getFiles(fileSource, List(".txt"))
       .find(file => {
-        println(s"CHECKING ${file.getName} AGAINST ${nameWithExtension}")
         file.getName == nameWithExtension
       })
       .map(file => {
-        println(s"FOUND ${file.getAbsolutePath}")
         val bufferFile = Source.fromFile(file)
         val stringFile = bufferFile.mkString
         bufferFile.close()
@@ -49,7 +46,7 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
   def updateFileBody(fileName: String, body: String): Graph = {
     val nameWithExtension = fileName + ".txt"
     LocalFileConsumer
-      .getFiles("src/test/Resources/TestData", List(".txt"))
+      .getFiles(fileSource, List(".txt"))
       .find(_.getName == nameWithExtension) match {
       case Some(file) => {
         val bw = new BufferedWriter(new FileWriter(file))
@@ -59,7 +56,7 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
       case None => {
         val bw = new BufferedWriter(
           new FileWriter(
-            "src/test/Resources/TestData/household/" + nameWithExtension
+            fileSource + nameWithExtension
           )
         )
         bw.write(body)
@@ -72,7 +69,7 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
   def deleteFile(fileName: String) = {
     val nameWithExtension = fileName + ".txt"
     LocalFileConsumer
-      .getFiles("src/test/Resources/TestData", List(".txt"))
+      .getFiles(fileSource, List(".txt"))
       .find(file => file.getName == nameWithExtension) match {
       case Some(file) => file.delete()
       case None => false

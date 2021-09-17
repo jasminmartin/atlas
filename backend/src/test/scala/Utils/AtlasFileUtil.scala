@@ -3,19 +3,33 @@ package Utils
 import java.io.{File, PrintWriter}
 
 class AtlasFileUtil {
+  val testingDirectory = "src/test/Resources/Test/"
 
-  val (chair, chairContent) = ("src/test/Resources/Test/household/chair.txt", "[[chair]]")
-  val (sofa, sofaContent)  = ("src/test/Resources/Test/household/sofa.txt", "[[sofa]]")
-  val (bathroom, bathroomContent) = ("src/test/Resources/Test/household/rooms/bathroom.txt", "[[chair]] and [[sofa]]")
-  val (cat, catContent)  = ("src/test/Resources/Test/household/pets/cat.txt", "[[cat]]")
-  val (dog, dogContent)  = ("src/test/Resources/Test/household/pets/dog.txt", "[[dog]] and [[cat]]")
-  val (lion, lionContent)  = ("src/test/Resources/Test/household/wildlife/lion.txt", "[[lion]] and [[cat]]")
+  val chair = "chair"
+  val sofa = "sofa"
+  val bathroom = "bathroom"
+  val cat = "cat"
+  val dog = "dog"
+  val lion = "lion"
 
-  val allFileContents = List((chair, chairContent),(sofa, sofaContent),(bathroom, bathroomContent),(cat, catContent), (dog, dogContent),(lion, lionContent))
+  def tag(word: String) = {
+    s"[[${word}]]"
+  }
+
+  val allWords = List(chair, sofa, bathroom, cat, dog, lion)
+
+  val (chairPath, chairContent) = ("src/test/Resources/Test/household/chair.txt", tag(chair))
+  val (sofaPath, sofaContent)  = ("src/test/Resources/Test/household/sofa.txt", tag(sofa))
+  val (bathroomPath, bathroomContent) = ("src/test/Resources/Test/household/rooms/bathroom.txt", tag(bathroom))
+  val (catPath, catContent)  = ("src/test/Resources/Test/household/pets/cat.txt", tag(cat))
+  val (dogPath, dogContent)  = ("src/test/Resources/Test/household/pets/dog.txt", tag(dog))
+  val (lionPath, lionContent)  = ("src/test/Resources/Test/household/wildlife/lion.txt", tag(lion))
+
+  val allFileContents = List((chairPath, chairContent),(sofaPath, sofaContent),(bathroomPath, bathroomContent),(catPath, catContent), (dogPath, dogContent),(lionPath, lionContent))
 
   val allFiles = allFileContents.map(pair => new File(pair._1))
 
-  val testingDirectory = "src/test/Resources/Test/"
+
   def newFile(name: String): File = {
     val file = new File(name)
     file.getParentFile.mkdirs()
@@ -38,8 +52,14 @@ class AtlasFileUtil {
     file(name, content)
   }
 
-  def deleteAllFiles = {
-    val filesToDelete =  new File(testingDirectory).listFiles()
-    filesToDelete.map(file => file.delete())
+  def deleteFilesInTestinDir = {
+    deleteFilesIn(new File(testingDirectory))
   }
+  def deleteFilesIn(directory: File): Unit = {
+    val filesToDelete =  directory.listFiles()
+    filesToDelete.foreach(file => {
+      if (file.isDirectory) {
+        deleteFilesIn(file) }
+      file.delete()
+    })}
 }
