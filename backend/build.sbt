@@ -1,12 +1,13 @@
 import Dependencies._
 
-name := "zettelkasten"
+name := "atlas"
 
 version := "0.1"
 
 scalaVersion := "2.13.3"
+parallelExecution in Test := false
 
-lazy val zettelkasten = Project(id = "zettlekasten", base = file("."))
+lazy val Atlas = Project(id = "atlas", base = file("."))
   .settings(allDeps)
 
 enablePlugins(JavaAppPackaging)

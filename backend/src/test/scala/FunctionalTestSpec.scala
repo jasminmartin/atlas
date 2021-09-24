@@ -12,7 +12,7 @@ import io.circe.syntax.EncoderOps
 import org.scalatest.concurrent.Eventually.eventually
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach, Outcome}
+import org.scalatest.{BeforeAndAfterEach, Outcome}
 
 class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers with ScalatestRouteTest
   with BeforeAndAfterEach {
@@ -36,16 +36,15 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers with Scalatest
   "FunctionalTestSpec" when {
     "A user creates a new Atlas note" should {
       "Update the Atlas web" in { f =>
-        Get(s"/file-body/${utils.cat}") ~> f.route ~> check {
+        Get(s"/file-body/${utils.dog}") ~> f.route ~> check {
           status shouldEqual StatusCodes.OK
           contentType shouldEqual ContentTypes.`application/json`
           val response = responseAs[FileBody]
           response shouldBe FileBody(
-            utils.cat,
-            utils.catContent
+            utils.dog,
+            utils.dogContent
           )
         }
-        Thread.sleep(1000)
         val entity =
           HttpEntity(ContentTypes.`application/json`, FileBody(utils.cat, "[[new-tag]]").asJson.toString())
         Post(s"/file-body/${utils.cat}", entity) ~> f.route ~> check {

@@ -30,7 +30,7 @@ with BeforeAndAfterEach {
 
   override def beforeEach {
     utils.allFileContents.map(pair => utils.createFileStructure(pair._1, pair._2))
-    Thread.sleep(1000)
+    Thread.sleep(2000)
   }
 
   override def afterEach {
