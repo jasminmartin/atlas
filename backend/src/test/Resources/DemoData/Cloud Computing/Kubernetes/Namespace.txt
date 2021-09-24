@@ -1,1 +1,0 @@
-Kubernetes provides a partitioning of the resources it manages into non-overlapping sets called [[namespaces]]. They are intended for use in [[environments]] with many users spread across multiple teams, or projects, or even separating environments like development, test, and production.
