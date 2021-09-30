@@ -1,5 +1,6 @@
 import dagre from 'dagre'
 import React, { useEffect, useState } from "react"
+
 import Modal from "./Modal"
 
 import Document from "./Document"
@@ -48,7 +49,6 @@ type GraphProps = {
 const Loading = () => <p>Loading...</p>
 
 export const Graph = ({ nodes, edges }: GraphProps) => {
-  console.log("Rendering Graph")
   const currentGraph = new dagre.graphlib.Graph();
   
   buildGraph(currentGraph, nodes, edges);
@@ -57,15 +57,6 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
   const [xOffset, setXOffSet] = useState(0)
   const [yOffset, setYOffSet] = useState(0)
 
-  const handlWheel = event => {
-    console.dir(event)
-    event.preventDefault()
-    const {pageX, pageY} = event
-
-    
-    const newFactor = zoomFactor + event.deltaY * - 0.01
-    setZoomFactor(Math.min(Math.max(.125, newFactor), 4))
-  }
 
   const nodeWidth = 100 * zoomFactor
   const nodePadding = nodeWidth / 10
@@ -84,20 +75,20 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
     f()
   }, [lastClicked])
 
-  console.dir(fetch)
+
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} onWheel={handlWheel}>
-        <svg viewBox="0 0 1000 1000" >
+      {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> */}
+        <svg viewBox="0 0 1000 1000" style={{width: 1000, height: 1000}} >
           {currentGraph.edges().map((edge) => {
             const fromNode = currentGraph.node(edge.v);
             const toNode = currentGraph.node(edge.w);
             return (
               <line
-                x1={(fromNode.x * zoomFactor) + xOffset}
-                y1={fromNode.y * zoomFactor}
-                x2={toNode.x * zoomFactor}
-                y2={toNode.y * zoomFactor}
+                x1={(fromNode.x * zoomFactor) + (1 - zoomFactor) * xOffset}
+                y1={(fromNode.y * zoomFactor) + (1 - zoomFactor) * yOffset}
+                x2={(toNode.x * zoomFactor) + (1 - zoomFactor) * xOffset}
+                y2={(toNode.y * zoomFactor) + (1 - zoomFactor) * yOffset}
                 stroke="black"
               />
             );
@@ -109,14 +100,14 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
               <>
                 <circle
                   style={circleStyle}
-                  cx={node.x * zoomFactor}
-                  cy={node.y * zoomFactor}
+                  cx={(node.x * zoomFactor) + (1 - zoomFactor) * xOffset}
+                  cy={(node.y * zoomFactor) + (1 - zoomFactor) * yOffset}
                   r={nodeWidth / 2}>
                 </circle>
                 <foreignObject
                   onClick={() => setLastClicked(node.label)}
-                  x={node.x * zoomFactor - (nodeWidth / 4)}
-                  y={node.y * zoomFactor - (nodeWidth / 4)}
+                  x={(node.x * zoomFactor) + (1 - zoomFactor) * xOffset - (nodeWidth / 4)}
+                  y={(node.y * zoomFactor)+ (1 - zoomFactor) * yOffset  - (nodeWidth / 4)}
                   width={nodeWidth / 2}
                   height={nodeWidth / 2}>
                   <div
@@ -149,7 +140,6 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
             }
           </Modal>
         )}
-      </div>
     </>
   );
 };
