@@ -10,7 +10,6 @@ type Props = {
 
 const newFile = () => {
     putFile("new file", "new body")
-    console.log("Created new file")
 }
 const Button = ({ onClick, buttonName }: Props) => {
 

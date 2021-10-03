@@ -85,10 +85,10 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
             const toNode = currentGraph.node(edge.w);
             return (
               <line
-                x1={(fromNode.x * zoomFactor) + (1 - zoomFactor) * xOffset}
-                y1={(fromNode.y * zoomFactor) + (1 - zoomFactor) * yOffset}
-                x2={(toNode.x * zoomFactor) + (1 - zoomFactor) * xOffset}
-                y2={(toNode.y * zoomFactor) + (1 - zoomFactor) * yOffset}
+                x1={(fromNode.x)}
+                y1={(fromNode.y)}
+                x2={(toNode.x)}
+                y2={(toNode.y )}
                 stroke="black"
               />
             );
@@ -100,14 +100,14 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
               <>
                 <circle
                   style={circleStyle}
-                  cx={(node.x * zoomFactor) + (1 - zoomFactor) * xOffset}
-                  cy={(node.y * zoomFactor) + (1 - zoomFactor) * yOffset}
+                  cx={(node.x)}
+                  cy={(node.y )}
                   r={nodeWidth / 2}>
                 </circle>
                 <foreignObject
                   onClick={() => setLastClicked(node.label)}
-                  x={(node.x * zoomFactor) + (1 - zoomFactor) * xOffset - (nodeWidth / 4)}
-                  y={(node.y * zoomFactor)+ (1 - zoomFactor) * yOffset  - (nodeWidth / 4)}
+                  x={(node.x) - (nodeWidth / 4)}
+                  y={(node.y ) - (nodeWidth / 4)}
                   width={nodeWidth / 2}
                   height={nodeWidth / 2}>
                   <div
