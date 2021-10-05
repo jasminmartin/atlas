@@ -16,7 +16,6 @@ type Props = {
 const save = (oldName: string, newName: string, body: string) => {
     deleteFile(oldName)
     putFile(newName, body)
-    console.log(body)
 }
 
 

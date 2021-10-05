@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import './App.css';
 import Graph, { Node, Edge } from './app/sections/Graph';
 import Button from './app/sections/Button';
@@ -39,16 +40,20 @@ function App({ }: AppProps) {
 
 
   return (
-  <>
-    <Button buttonName="Create New File" onClick={()=>setIsOpen(true)}/>
-  {isOpen && <Modal title="New File" onClose={()=>setIsOpen(false)}>
-  <Document body="new body" name="new name"/>
-  </Modal>}
-  <Graph nodes={graph.nodes.map(name => ({ id: name, label: name, width: 100, height: 100 }))} edges={graph.edges.map(edge => ({
-    from: edge.firstNode,
-    to: edge.secondNode,
-  }))} />
-  </>);
+    <>
+      <Button buttonName="Create New File" onClick={() => setIsOpen(true)} />
+      {isOpen && <Modal title="New File" onClose={() => setIsOpen(false)}>
+        <Document body="new body" name="new name" />
+      </Modal>}
+      <TransformWrapper>
+        <TransformComponent>
+          <Graph nodes={graph.nodes.map(name => ({ id: name, label: name, width: 100, height: 100 }))} edges={graph.edges.map(edge => ({
+            from: edge.firstNode,
+            to: edge.secondNode,
+          }))} />
+        </TransformComponent>
+      </TransformWrapper>
+    </>);
 }
 
 export default App;
