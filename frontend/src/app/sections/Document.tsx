@@ -30,7 +30,7 @@ const Document = ({ body = "", name: oldName }: Props) => {
             save(oldName, newName, content)
         }
         }>
-            <textarea value={newName} onChange={e => setTitle(e.target.value)}
+            <input value={newName} onChange={e => setTitle(e.target.value)}
                 style={{ minHeight: "10px", width: "100%", resize: "none", display: "block", margin: "2%", fontSize: '120%', fontFamily: "system-ui" }} />
             <textarea value={content} onChange={e => setContent(e.target.value)}
                 style={{ minHeight: "250px", width: "100%", resize: "none", display: "block", margin: "2%", fontFamily: "system-ui" }} />

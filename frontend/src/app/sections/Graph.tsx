@@ -125,7 +125,8 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
                       fontSize: `${zoomFactor * 60}%`,
                       overflow:"hidden",
                       whiteSpace:"nowrap",
-                      textOverflow:"ellipsis"
+                      textOverflow:"ellipsis",
+                      textTransform: "capitalize"
                     }}
                     >{node.label}</label>
                   </div>
