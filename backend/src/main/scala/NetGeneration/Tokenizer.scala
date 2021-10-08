@@ -1,7 +1,6 @@
 package NetGeneration
 
 import CommonModels.FileAndTags
-import NetGeneration.Stemmer.combineStems
 
 import java.io.File
 import scala.io.Source
