@@ -1,13 +1,13 @@
 package NetGeneration
 
 import CommonModels.{Edge, FileBody, Graph}
-import FileIngestion.{FileConsumer, LocalFileConsumer}
-import NetGeneration.NodeIdentifier.{createNodePairs, findAllFileNodes}
+import FileIngestion.{FileParser, LocalFileParser}
+import NetGeneration.Tokenizer.{createNodePairs, findAllFileNodes}
 
 import java.io.{BufferedWriter, FileWriter}
 import scala.io.Source
 
-class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
+class GraphCreator(fileConsumer: FileParser, fileSource: String) {
 
   def createGraph: Graph = {
     val nodes: List[String] = findAllFileNodes(
@@ -18,7 +18,7 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
       EdgeIdentifier
         .createEdges(
           createNodePairs(
-            LocalFileConsumer.getFiles(fileSource, List(".txt"))
+            LocalFileParser.getFiles(fileSource, List(".txt"))
           )
         )
 
@@ -30,7 +30,7 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
 
   def getFileBody(fileName: String): Option[FileBody] = {
     val nameWithExtension = fileName + ".txt"
-    LocalFileConsumer
+    LocalFileParser
       .getFiles(fileSource, List(".txt"))
       .find(file => {
         file.getName == nameWithExtension
@@ -45,7 +45,7 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
 
   def updateFileBody(fileName: String, body: String): Graph = {
     val nameWithExtension = fileName + ".txt"
-    LocalFileConsumer
+    LocalFileParser
       .getFiles(fileSource, List(".txt"))
       .find(_.getName == nameWithExtension) match {
       case Some(file) => {
@@ -68,7 +68,7 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
 
   def deleteFile(fileName: String) = {
     val nameWithExtension = fileName + ".txt"
-    LocalFileConsumer
+    LocalFileParser
       .getFiles(fileSource, List(".txt"))
       .find(file => file.getName == nameWithExtension) match {
       case Some(file) => file.delete()

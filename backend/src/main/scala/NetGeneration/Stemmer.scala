@@ -1,7 +1,8 @@
 package NetGeneration
 
+import NetGeneration.Stemmer.calculateM
+
 object Stemmer {
-//Not using this right now
 
   def stem(word: String): String = {
     val s1a: String = step1a(word.toLowerCase())
@@ -34,26 +35,31 @@ object Stemmer {
   }
 
     def step1b(word: String): String = {
-      if (word.endsWith("eed") && calculateM(word.dropRight(3)) > 0) {
-        word.dropRight(1)
-      }
-        val stemmed = word match {
-          case word if (word.endsWith("ed") && word.map(l => consOrVowel(l)).toList.contains('v')) => word.dropRight(2)
-          case word if (word.endsWith("ing") && word.map(l => consOrVowel(l)).toList.contains('v')) => word.dropRight(3)
-          case _ => return word
+      if (word.endsWith("eed")) {
+        if (calculateM(word.dropRight(3)) > 0) {
+          return word.dropRight(1)
+        } else {
+          return word
         }
+      }
+
+      val stemmed = word match {
+        case word if (word.endsWith("ed") && word.dropRight(2).map(l => consOrVowel(l)).toList.contains('v')) => word.dropRight(2)
+        case word if (word.endsWith("ing") && word.dropRight(3).map(l => consOrVowel(l)).toList.contains('v')) => word.dropRight(3)
+        case _ => return word
+      }
+
         stemmed match {
           case stemmed if (stemmed.endsWith("at")) => stemmed +'e'
           case stemmed if (stemmed.endsWith("bl")) => stemmed +'e'
           case stemmed if (stemmed.endsWith("iz")) => stemmed +'e'
           case stemmed if (stemmed.charAt(stemmed.length-1) == stemmed.charAt(stemmed.length-2) &&
-            (consOrVowel(stemmed.charAt(stemmed.length)) == 'c' &&
-              (consOrVowel(stemmed.charAt(stemmed.length-1)) == 'c' &&
-                stemmed.charAt(stemmed.length) != 'l' &&
-                stemmed.charAt(stemmed.length) != 's' &&
-                stemmed.charAt(stemmed.length) != 'z'
-                ))) => stemmed.dropRight(1)
-          case stemmed if (calculateM(stemmed) > 0 &&
+            stemmed.map(letter => consOrVowel(letter)).endsWith("cc") &&
+                stemmed.charAt(stemmed.length-1) != 'l' &&
+                stemmed.charAt(stemmed.length-1) != 's' &&
+                stemmed.charAt(stemmed.length-1) != 'z'
+                ) => stemmed.dropRight(1)
+          case stemmed if (calculateM(stemmed) == 1 &&
             stemmed.map(letter => consOrVowel(letter)).endsWith("cvc")) &&
           !(stemmed.endsWith("x")) &&
             !(stemmed.endsWith("y")) &&
@@ -63,30 +69,33 @@ object Stemmer {
       }
 
   def step1c(word: String) = {
-    if(consOrVowel(word.charAt(word.length -1)) == 'v' && word.charAt(word.length-1)== 'y') {
+    if(word.dropRight(1).map(consOrVowel).contains('v') && word.charAt(word.length-1) == 'y') {
       word.dropRight(1) + 'i'
     } else word
   }
 
   def step2(word: String) = {
     word match {
-      case word if (word.endsWith("ational") && calculateM(word.dropRight(7)) > 0) => word.dropRight(7) + "ational"
-      case word if (word.endsWith("entli") && calculateM(word.dropRight(5)) > 0) => word.dropRight(5) + "entli"
-      case word if (word.endsWith("anci") && calculateM(word.dropRight(4)) > 0) => word.dropRight(4) + "anci"
-      case word if (word.endsWith("izer") && calculateM(word.dropRight(4)) > 0) => word.dropRight(4) + "izer"
-      case word if (word.endsWith("abli") && calculateM(word.dropRight(4)) > 0) => word.dropRight(4) + "abli"
-      case word if (word.endsWith("alli") && calculateM(word.dropRight(4)) > 0) => word.dropRight(4) + "alli"
-      case word if (word.endsWith("eli") && calculateM(word.dropRight(3)) > 0) => word.dropRight(3) + "eli"
-      case word if (word.endsWith("ousli") && calculateM(word.dropRight(5)) > 0) => word.dropRight(5) + "ousli"
-      case word if (word.endsWith("ization") && calculateM(word.dropRight(7)) > 0) => word.dropRight(7) + "ization"
-      case word if (word.endsWith("ation") && calculateM(word.dropRight(5)) > 0) => word.dropRight(5) + "ation"
-      case word if (word.endsWith("ator") && calculateM(word.dropRight(4)) > 0) => word.dropRight(4) + "ator"
-      case word if (word.endsWith("alism") && calculateM(word.dropRight(5)) > 0) => word.dropRight(5) + "alism"
-      case word if (word.endsWith("iveness") && calculateM(word.dropRight(7)) > 0) => word.dropRight(7) + "iveness"
-      case word if (word.endsWith("fulness") && calculateM(word.dropRight(7)) > 0) => word.dropRight(7) + "fulness"
-      case word if (word.endsWith("ousness") && calculateM(word.dropRight(7)) > 0) => word.dropRight(7) + "ousness"
-      case word if (word.endsWith("ivili") && calculateM(word.dropRight(5)) > 0) => word.dropRight(5) + "ivili"
-      case word if (word.endsWith("biliti") && calculateM(word.dropRight(6)) > 0) => word.dropRight(6) + "biliti"
+      case word if (word.endsWith("ational") && calculateM(word.dropRight(7))> 0) => word.dropRight(7) + "ate"
+      case word if (word.endsWith("tional") && calculateM(word.dropRight(6))> 0) => word.dropRight(6) + "tion"
+      case word if (word.endsWith("entli") && calculateM(word.dropRight(5)) > 0) => word.dropRight(5) + "ent"
+      case word if (word.endsWith("enci") && calculateM(word.dropRight(4)) > 0) => word.dropRight(4) + "ence"
+      case word if (word.endsWith("anci") && calculateM(word.dropRight(4)) > 0) => word.dropRight(4) + "ance"
+      case word if (word.endsWith("izer") && calculateM(word.dropRight(4)) > 0) => word.dropRight(4) + "ize"
+      case word if (word.endsWith("abli") && calculateM(word.dropRight(4)) > 0) => word.dropRight(4) + "able"
+      case word if (word.endsWith("alli") && calculateM(word.dropRight(4)) > 0) => word.dropRight(4) + "al"
+      case word if (word.endsWith("eli") && calculateM(word.dropRight(3)) > 0) => word.dropRight(3) + "e"
+      case word if (word.endsWith("ousli") && calculateM(word.dropRight(5)) > 0) => word.dropRight(5) + "ous"
+      case word if (word.endsWith("ization") && calculateM(word.dropRight(7)) > 0) => word.dropRight(7) + "ize"
+      case word if (word.endsWith("ation") && calculateM(word.dropRight(5)) > 0) => word.dropRight(5) + "ate"
+      case word if (word.endsWith("ator") && calculateM(word.dropRight(4)) > 0) => word.dropRight(4) + "ate"
+      case word if (word.endsWith("alism") && calculateM(word.dropRight(5)) > 0) => word.dropRight(5) + "al"
+      case word if (word.endsWith("iveness") && calculateM(word.dropRight(7)) > 0) => word.dropRight(7) + "ive"
+      case word if (word.endsWith("fulness") && calculateM(word.dropRight(7)) > 0) => word.dropRight(7) + "ful"
+      case word if (word.endsWith("ousness") && calculateM(word.dropRight(7)) > 0) => word.dropRight(7) + "ous"
+      case word if (word.endsWith("aliti") && calculateM(word.dropRight(5)) > 0) => word.dropRight(5) + "al"
+      case word if (word.endsWith("ivili") && calculateM(word.dropRight(5)) > 0) => word.dropRight(5) + "ive"
+      case word if (word.endsWith("biliti") && calculateM(word.dropRight(6)) > 0) => word.dropRight(6) + "ble"
       case _ => word
     }
   }
@@ -134,7 +143,7 @@ object Stemmer {
     }
     val withoutE = word.dropRight(1)
     withoutE match {
-      case word if (calculateM(word.dropRight(1)) > 1) => withoutE
+      case word if (calculateM(word) > 1) => withoutE
       case word if (calculateM(word) == 1 &&
         withoutE.map(letter => consOrVowel(letter)).endsWith("cvc")) &&
         !(withoutE.endsWith("x")) &&
@@ -144,13 +153,13 @@ object Stemmer {
     }
   }
 
-  def step5b(word: String) = {
-    word match {
-      case word if (calculateM(word) > 1 &&
-        word.map(letter => consOrVowel(letter)).endsWith("cc")) &&
-        word.charAt(word.length - 1) == 'l' => word.dropRight(1)
-      case _ => word
+  def step5b(word: String): String = {
+    if (word.map(consOrVowel).endsWith("cc")) {
+      if (word.charAt(word.length - 1) == 'l' && calculateM(word.dropRight(1)) > 1) {
+        return word.dropRight(1)
+      }
     }
+    word
   }
 
     def calculateM(word: String): Int = {

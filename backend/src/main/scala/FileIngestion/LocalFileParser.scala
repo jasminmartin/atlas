@@ -2,7 +2,7 @@ package FileIngestion
 
 import java.io.File
 
-object LocalFileConsumer extends FileConsumer {
+object LocalFileParser extends FileParser {
 
   override def getFiles(topLevelDirectory: String, extensions: List[String]): List[File] = {
     val allLocalFiles: Option[List[File]] = isDirectory(topLevelDirectory)
