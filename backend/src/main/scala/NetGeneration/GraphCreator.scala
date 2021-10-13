@@ -11,10 +11,9 @@ class GraphCreator(fileConsumer: FileParser, fileSource: String) {
 
   def createGraph: Graph = {
     val nodes: List[String] = findAllFileNodes(
-      fileConsumer.getFiles(fileSource, List(".txt"))
-    )
-    println(s"all of the nodes ${nodes}")
-    val edges: List[Edge] =
+      fileConsumer.getFiles(fileSource, List(".txt")
+    ))
+    var edges: List[Edge] =
       EdgeIdentifier
         .createEdges(
           createNodePairs(
@@ -22,9 +21,15 @@ class GraphCreator(fileConsumer: FileParser, fileSource: String) {
           )
         )
 
-    println(s"all of the edges ${edges}")
+    val stems: Seq[(String, String)] = nodes.map(file => (Stemmer.stem(file), file))
 
-    Graph(nodes.distinct, edges)
+    val stemmedEdges: Seq[Edge] = stems.flatMap(pair =>
+      stems.filter(otherPair => pair._1 == otherPair._1).map(otherPair => Edge(pair._2, otherPair._2))
+    )
+
+    println(s"all of the edges ${edges}")
+    println(s"all of the nodes ${nodes}")
+    Graph(nodes.distinct, edges ++ stemmedEdges)
   }
 
 

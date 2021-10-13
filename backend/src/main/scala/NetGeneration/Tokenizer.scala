@@ -28,7 +28,7 @@ object Tokenizer {
 
   def createNodePairs(allFiles: List[File]): List[FileAndTags] = {
     allFiles.map(file =>
-      FileAndTags(Stemmer.stem(sanitizeFiles(file.getName)), tokenizeTags(file)))
+      FileAndTags(sanitizeFiles(file.getName), tokenizeTags(file)))
   }
 
   private def stripNode(nodeName: String): String = {
