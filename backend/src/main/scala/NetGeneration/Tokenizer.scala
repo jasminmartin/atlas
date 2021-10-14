@@ -1,15 +1,13 @@
 package NetGeneration
 
 import CommonModels.FileAndTags
-import NetGeneration.Stemmer.combineStems
 
 import java.io.File
 import scala.io.Source
 
-object NodeIdentifier {
+object Tokenizer {
 
-
-  def findTaggedNodes(file: File): List[String] = {
+  def tokenizeTags(file: File): List[String] = {
     val tagRegex = """\[\[([^\[\]]+)\]\]""".r
     val bufferFile = Source.fromFile(file)
     val stringFile = bufferFile.mkString
@@ -20,10 +18,9 @@ object NodeIdentifier {
       .toList
   }
 
-
   def findAllFileNodes(allFiles: List[File]): List[String] = {
     for {
-    taggedNodes <- allFiles.map(file => findTaggedNodes(file))
+    taggedNodes <- allFiles.map(file => tokenizeTags(file))
     fileNodes = allFiles.map(file => sanitizeFiles(file.getName))
     allNodes <- fileNodes ++ taggedNodes
     } yield allNodes
@@ -31,7 +28,7 @@ object NodeIdentifier {
 
   def createNodePairs(allFiles: List[File]): List[FileAndTags] = {
     allFiles.map(file =>
-      FileAndTags(sanitizeFiles(file.getName), findTaggedNodes(file)))
+      FileAndTags(sanitizeFiles(file.getName), tokenizeTags(file)))
   }
 
   private def stripNode(nodeName: String): String = {

@@ -1,6 +1,6 @@
 package Server
 
-import FileIngestion.LocalFileConsumer
+import FileIngestion.LocalFileParser
 import NetExposure.RouteClient
 import NetGeneration.GraphCreator
 import pureconfig.ConfigSource
@@ -15,6 +15,6 @@ object Configuration extends ActorSystemConfig {
 
   val appConfig: AtlasConfig = ConfigSource.default.loadOrThrow[AtlasConfig]
 
-  val graphCreator = new GraphCreator(LocalFileConsumer, "src/test/Resources/Test/")
+  val graphCreator = new GraphCreator(LocalFileParser, "src/test/Resources/Test/")
   val allRoutes = new RouteClient(graphCreator)
 }
