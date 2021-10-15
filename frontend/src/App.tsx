@@ -57,7 +57,9 @@ function App({ }: AppProps) {
         <Instructions />
       </Modal>}
 
-      <TransformWrapper>
+      <TransformWrapper
+      initialScale={2}
+      >
         <TransformComponent>
           <Graph nodes={graph.nodes.map(name => ({ id: name, label: name, width: 100, height: 100 }))} edges={graph.edges.map(edge => ({
             from: edge.firstNode,

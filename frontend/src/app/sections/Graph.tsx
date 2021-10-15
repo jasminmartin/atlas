@@ -79,7 +79,7 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
   return (
     <>
       {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> */}
-        <svg viewBox="0 0 1000 1000" style={{width: 1000, height: 1000}} >
+        <svg viewBox="0 0 10000 10000" style={{width: 4000, height: 4000}} >
           {currentGraph.edges().map((edge) => {
             const fromNode = currentGraph.node(edge.v);
             const toNode = currentGraph.node(edge.w);
