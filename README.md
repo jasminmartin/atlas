@@ -1,4 +1,4 @@
-**Atlas**
+## Atlas
 
 Atlas is a knowledge management tool that parses file systems and generates graphs that show the relationships between documents.
 
@@ -11,7 +11,7 @@ The Atlas Web interface makes it easy to understand how documents are linked:
 
 <br />
 
-**Local Artefact**
+## Local Artefact
 
 Atlas loads the file system stored under: `/backend/src/test/Resources/Test`.
 
@@ -35,7 +35,7 @@ The Atlas Web can be viewed at the local endpoint:
 
 <br />
 
-**Synoptic Project Report**
+## Synoptic Project Report
 
 Atlas was developed as part of an Apprenticeship synoptic project. To generate the project report:
 
