@@ -1,10 +1,13 @@
 **Atlas**
 
-Welcome to Atlas.
-
 Atlas is a knowledge management tool that parses file systems and generates graphs that show the relationships between documents.
 
 Atlas links documents with common [[tagged]] keywords.
+
+The Atlas Web interface makes it easy to understand how documents are linked:
+
+![image](https://user-images.githubusercontent.com/42213235/137473742-798d7328-2473-42b7-b73c-9ff08dc69c3c.png)
+
 
 <br />
 
