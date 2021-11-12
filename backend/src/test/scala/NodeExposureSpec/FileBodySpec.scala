@@ -1,7 +1,7 @@
 package NodeExposureSpec
 
 import CommonModels.FileBody
-import FileIngestion.LocalFileConsumer
+import FileIngestion.LocalFileParser
 import NetExposure.RouteClient
 import NetGeneration.GraphCreator
 import Utils.AtlasFileUtil
@@ -20,7 +20,7 @@ class FileBodySpec
     extends FixtureAnyWordSpec
     with ScalatestRouteTest
     with Matchers
-with BeforeAndAfterEach {
+    with BeforeAndAfterEach {
 
   markup {
     "FileBodySpec checks that the Route returns the selected file body"
@@ -29,7 +29,9 @@ with BeforeAndAfterEach {
   val utils = new AtlasFileUtil
 
   override def beforeEach {
-    utils.allFileContents.map(pair => utils.createFileStructure(pair._1, pair._2))
+    utils.allFileContents.map(pair =>
+      utils.createFileStructure(pair._1, pair._2)
+    )
     Thread.sleep(2000)
   }
 
@@ -58,13 +60,13 @@ with BeforeAndAfterEach {
         import f._
 
         Get(s"/file-body/${utils.dog}") ~> route ~> check {
-            status shouldEqual StatusCodes.OK
-            contentType shouldEqual ContentTypes.`application/json`
-            val response = responseAs[FileBody]
-            response shouldBe FileBody(
-              utils.dog,
-              utils.dogContent
-            )
+          status shouldEqual StatusCodes.OK
+          contentType shouldEqual ContentTypes.`application/json`
+          val response = responseAs[FileBody]
+          response shouldBe FileBody(
+            utils.dog,
+            utils.dogContent
+          )
         }
       }
 
@@ -78,9 +80,11 @@ with BeforeAndAfterEach {
 
     "Post /file-body/ is triggered" should {
       "update a file-body with the new put information" in { f =>
-
         val entity =
-          HttpEntity(ContentTypes.`application/json`, FileBody(utils.bathroom, "[[new-tag]]").asJson.toString())
+          HttpEntity(
+            ContentTypes.`application/json`,
+            FileBody(utils.bathroom, "[[new-tag]]").asJson.toString()
+          )
 
         Post(s"/file-body/${utils.bathroom}", entity) ~> f.route ~> check {
           contentType shouldEqual ContentTypes.`application/json`
@@ -100,7 +104,6 @@ with BeforeAndAfterEach {
 
     "Delete /file-body/ is triggered " should {
       "Delete the bathroom.txt file" in { f =>
-
         Get(s"/file-body/${utils.lion}") ~> f.route ~> check {
           status shouldEqual StatusCodes.OK
           contentType shouldEqual ContentTypes.`application/json`
@@ -114,7 +117,6 @@ with BeforeAndAfterEach {
       }
 
       "Respond with a Bad request if a file cannot be found to delete" in { f =>
-
         Delete(s"/file-body/nonexistent") ~> f.route ~> check {
           status shouldEqual StatusCodes.NotFound
         }
@@ -123,7 +125,7 @@ with BeforeAndAfterEach {
   }
 
   override protected def withFixture(test: OneArgTest): Outcome = {
-    val localFileConsumer = LocalFileConsumer
+    val localFileConsumer = LocalFileParser
     val GraphCreator =
       new GraphCreator(localFileConsumer, utils.testingDirectory)
     val atlasRoute: RouteClient = new RouteClient(GraphCreator)

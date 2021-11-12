@@ -1,5 +1,5 @@
 import CommonModels.FileBody
-import FileIngestion.LocalFileConsumer
+import FileIngestion.LocalFileParser
 import NetExposure.RouteClient
 import NetGeneration.GraphCreator
 import Utils.AtlasFileUtil
@@ -14,8 +14,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
 import org.scalatest.{BeforeAndAfterEach, Outcome}
 
-class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers with ScalatestRouteTest
-  with BeforeAndAfterEach {
+class FunctionalTestSpec
+    extends FixtureAnyWordSpec
+    with Matchers
+    with ScalatestRouteTest
+    with BeforeAndAfterEach {
 
   markup {
     "FunctionalTestSpec tests Atlas user journeys"
@@ -24,7 +27,9 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers with Scalatest
   val utils = new AtlasFileUtil
 
   override def beforeEach {
-    utils.allFileContents.map(pair => utils.createFileStructure(pair._1, pair._2))
+    utils.allFileContents.map(pair =>
+      utils.createFileStructure(pair._1, pair._2)
+    )
     Thread.sleep(1000)
   }
 
@@ -46,9 +51,12 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers with Scalatest
           )
         }
         val entity =
-          HttpEntity(ContentTypes.`application/json`, FileBody(utils.cat, "[[new-tag]]").asJson.toString())
+          HttpEntity(
+            ContentTypes.`application/json`,
+            FileBody(utils.cat, "[[new-tag]]").asJson.toString()
+          )
         Post(s"/file-body/${utils.cat}", entity) ~> f.route ~> check {
-            status shouldEqual StatusCodes.OK
+          status shouldEqual StatusCodes.OK
         }
         Thread.sleep(1000)
         Get(s"/file-body/${utils.cat}") ~> f.route ~> check {
@@ -73,7 +81,7 @@ class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers with Scalatest
 
   override protected def withFixture(test: OneArgTest): Outcome = {
     val GraphCreator =
-      new GraphCreator(LocalFileConsumer, utils.testingDirectory)
+      new GraphCreator(LocalFileParser, utils.testingDirectory)
     val altasRoute: RouteClient = new RouteClient(GraphCreator)
 
     super.withFixture(

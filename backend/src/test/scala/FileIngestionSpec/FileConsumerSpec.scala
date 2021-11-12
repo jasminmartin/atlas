@@ -1,12 +1,15 @@
 package FileIngestionSpec
 
-import FileIngestion.LocalFileConsumer
+import FileIngestion.LocalFileParser
 import Utils.AtlasFileUtil
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class FileConsumerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
+class FileConsumerSpec
+    extends AnyWordSpec
+    with Matchers
+    with BeforeAndAfterEach {
 
   markup {
     "FileConsumerSpec checks that the FileConsumer can list files from directories"
@@ -15,7 +18,9 @@ class FileConsumerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach
   val utils = new AtlasFileUtil
 
   override def beforeEach {
-    utils.allFileContents.map(pair => utils.createFileStructure(pair._1, pair._2))
+    utils.allFileContents.map(pair =>
+      utils.createFileStructure(pair._1, pair._2)
+    )
   }
 
   override def afterEach {
@@ -25,13 +30,17 @@ class FileConsumerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach
   "FileConsumerSpec" when {
     "Given a nested directory structure" should {
       "Return a list of files" in {
-        LocalFileConsumer.isDirectory(utils.testingDirectory).getOrElse(fail("Cannot get top level")) should contain theSameElementsAs utils.allFiles
+        LocalFileParser
+          .isDirectory(utils.testingDirectory)
+          .getOrElse(
+            fail("Cannot get top level")
+          ) should contain theSameElementsAs utils.allFiles
       }
 
       "Handle the case if no files are found" in {
         val emptyDirectoryStructure: String =
           "src/test/Resources/TestData/household/inhabitants"
-        LocalFileConsumer.isDirectory(emptyDirectoryStructure) shouldBe None
+        LocalFileParser.isDirectory(emptyDirectoryStructure) shouldBe None
       }
     }
   }

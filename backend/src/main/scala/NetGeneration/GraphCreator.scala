@@ -11,8 +11,8 @@ class GraphCreator(fileConsumer: FileParser, fileSource: String) {
 
   def createGraph: Graph = {
     val nodes: List[String] = findAllFileNodes(
-      fileConsumer.getFiles(fileSource, List(".txt")
-    ))
+      fileConsumer.getFiles(fileSource, List(".txt"))
+    )
     var edges: List[Edge] =
       EdgeIdentifier
         .createEdges(
@@ -21,17 +21,17 @@ class GraphCreator(fileConsumer: FileParser, fileSource: String) {
           )
         )
 
-    val stems: Seq[(String, String)] = nodes.map(file => (Stemmer.stem(file), file))
+    val stems: Seq[(String, String)] =
+      nodes.map(file => (Stemmer.stem(file), file))
 
     val stemmedEdges: Seq[Edge] = stems.flatMap(pair =>
-      stems.filter(otherPair => pair._1 == otherPair._1).map(otherPair => Edge(pair._2, otherPair._2))
+      stems
+        .filter(otherPair => pair._1 == otherPair._1)
+        .map(otherPair => Edge(pair._2, otherPair._2))
     )
 
-    println(s"all of the edges ${edges}")
-    println(s"all of the nodes ${nodes}")
     Graph(nodes.distinct, edges ++ stemmedEdges)
   }
-
 
   def getFileBody(fileName: String): Option[FileBody] = {
     val nameWithExtension = fileName + ".txt"
@@ -77,7 +77,7 @@ class GraphCreator(fileConsumer: FileParser, fileSource: String) {
       .getFiles(fileSource, List(".txt"))
       .find(file => file.getName == nameWithExtension) match {
       case Some(file) => file.delete()
-      case None => false
+      case None       => false
     }
   }
 }

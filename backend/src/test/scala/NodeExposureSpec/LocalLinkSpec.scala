@@ -1,7 +1,7 @@
 package NodeExposureSpec
 
 import CommonModels.{Edge, Graph}
-import FileIngestion.LocalFileConsumer
+import FileIngestion.{LocalFileParser}
 import NetExposure.RouteClient
 import NetGeneration.GraphCreator
 import Utils.AtlasFileUtil
@@ -27,7 +27,9 @@ class LocalLinkSpec
   val utils = new AtlasFileUtil
 
   override def beforeEach {
-    utils.allFileContents.map(pair => utils.createFileStructure(pair._1, pair._2))
+    utils.allFileContents.map(pair =>
+      utils.createFileStructure(pair._1, pair._2)
+    )
   }
 
   override def afterEach {
@@ -36,22 +38,23 @@ class LocalLinkSpec
 
   "LocalLinkSpec" when {
     "/local-list is triggered" should {
-      "Return a list of the local nodes" in {
-        f =>
-          Get(s"/local-link") ~> f.route ~> check {
-            status shouldEqual StatusCodes.OK
-            contentType shouldEqual ContentTypes.`application/json`
-            val response = responseAs[Graph]
-            response.nodes should contain allElementsOf utils.allWords
-            response.edges should contain allElementsOf  utils.allWords.map(word => Edge(word, (word))).toList
-          }
+      "Return a list of the local nodes" in { f =>
+        Get(s"/local-link") ~> f.route ~> check {
+          status shouldEqual StatusCodes.OK
+          contentType shouldEqual ContentTypes.`application/json`
+          val response = responseAs[Graph]
+          response.nodes should contain allElementsOf utils.allWords
+          response.edges should contain allElementsOf utils.allWords
+            .map(word => Edge(word, (word)))
+            .toList
+        }
       }
     }
   }
 
   override protected def withFixture(test: OneArgTest): Outcome = {
     val GraphCreator =
-      new GraphCreator(LocalFileConsumer, utils.testingDirectory)
+      new GraphCreator(LocalFileParser, utils.testingDirectory)
     val altasRoute: RouteClient = new RouteClient(GraphCreator)
 
     super.withFixture(
