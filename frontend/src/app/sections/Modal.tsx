@@ -32,13 +32,13 @@ const Modal = ({ children, title, onClose }: ModalProps) => {
 
 
     return thisElement.current ? ReactDOM.createPortal(
-        <div className="ModalBackground" onClick={onClose}>
-            <div className="ModalContent" onClick={e => e.stopPropagation()}>
+        <div className="ModalBackground" style={{zIndex: 1}}onClick={onClose}>
+            <div className="ModalContent" style={{
+          paddingRight: "3%"}} onClick={e => e.stopPropagation()}>
                 <div style={{ display: "flex" }}>
                     <FontAwesomeIcon icon={faTimes} onClick={onClose} />
                 </div>
                 {children}
-
             </div>
         </div>,
         thisElement.current) : null

@@ -1,122 +1,97 @@
-import java.io.File
-import CommonModels.{Edge, FileAndTags}
-import FileIngestion.{FileConsumer, LocalFileConsumer}
-import NetGeneration.{EdgeIdentifier, NodeIdentifier, GraphCreator}
-import org.mockito.MockitoSugar.mock
-import org.scalatest.Outcome
+import CommonModels.FileBody
+import FileIngestion.LocalFileParser
+import NetExposure.RouteClient
+import NetGeneration.GraphCreator
+import Utils.AtlasFileUtil
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
+import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.testkit.ScalatestRouteTest
+import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
+import io.circe.generic.auto._
+import io.circe.syntax.EncoderOps
+import org.scalatest.concurrent.Eventually.eventually
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
+import org.scalatest.{BeforeAndAfterEach, Outcome}
 
-class FunctionalTestSpec extends FixtureAnyWordSpec with Matchers {
+class FunctionalTestSpec
+    extends FixtureAnyWordSpec
+    with Matchers
+    with ScalatestRouteTest
+    with BeforeAndAfterEach {
 
   markup {
-    "FunctionalTestSpec tests the functionality of the app as whole"
+    "FunctionalTestSpec tests Atlas user journeys"
+  }
+
+  val utils = new AtlasFileUtil
+
+  override def beforeEach {
+    utils.allFileContents.map(pair =>
+      utils.createFileStructure(pair._1, pair._2)
+    )
+    Thread.sleep(1000)
+  }
+
+  override def afterEach {
+    utils.deleteFilesInTestinDir
+    Thread.sleep(1000)
   }
 
   "FunctionalTestSpec" when {
-    "Given a directory" should {
-      "Return a list of nodes" in { f =>
-        val allFiles: Option[List[File]] =
-          LocalFileConsumer.isDirectory(f.nestedDirectoryStructure)
-        val filteredFiles: List[File] =
-          LocalFileConsumer.filterFileExtensions(allFiles.get, List(".txt"))
-        val fileTagList: Seq[String] =
-          f.textCreator.findAllFileNodes(filteredFiles)
-        fileTagList should contain theSameElementsAs
-          List(
-            "Animal",
-            "table",
-            "sofa",
-            "chair",
-            "dog",
-            "cat",
-            "lion",
-            "bathroom",
-            "Animal",
-            "table",
-            "sofa",
-            "chair",
-            "dog",
-            "cat",
-            "lion",
-            "bathroom",
-            "furniture",
-            "Animal",
-            "table",
-            "sofa",
-            "chair",
-            "dog",
-            "cat",
-            "lion",
-            "bathroom",
-            "sitting",
-            "furniture",
-            "Animal",
-            "table",
-            "sofa",
-            "chair",
-            "dog",
-            "cat",
-            "lion",
-            "bathroom",
-            "furniture",
-            "Animal",
-            "table",
-            "sofa",
-            "chair",
-            "dog",
-            "cat",
-            "lion",
-            "bathroom",
-            "Animal",
-            "table",
-            "sofa",
-            "chair",
-            "dog",
-            "cat",
-            "lion",
-            "bathroom",
-            "Animal",
-            "table",
-            "sofa",
-            "chair",
-            "dog",
-            "cat",
-            "lion",
-            "bathroom",
-            "Animal",
-            "table",
-            "sofa",
-            "chair",
-            "dog",
-            "cat",
-            "lion",
-            "bathroom"
+    "A user creates a new Atlas note" should {
+      "Update the Atlas web" in { f =>
+        Get(s"/file-body/${utils.dog}") ~> f.route ~> check {
+          status shouldEqual StatusCodes.OK
+          contentType shouldEqual ContentTypes.`application/json`
+          val response = responseAs[FileBody]
+          response shouldBe FileBody(
+            utils.dog,
+            utils.dogContent
           )
+        }
+        val entity =
+          HttpEntity(
+            ContentTypes.`application/json`,
+            FileBody(utils.cat, "[[new-tag]]").asJson.toString()
+          )
+        Post(s"/file-body/${utils.cat}", entity) ~> f.route ~> check {
+          status shouldEqual StatusCodes.OK
+        }
+        Thread.sleep(1000)
+        Get(s"/file-body/${utils.cat}") ~> f.route ~> check {
+          status shouldEqual StatusCodes.OK
+          contentType shouldEqual ContentTypes.`application/json`
+          val response = responseAs[FileBody]
+          eventually {
+            response shouldBe FileBody(utils.cat, "[[new-tag]]")
+          }
+        }
+
+        Delete(s"/file-body/${utils.cat}") ~> f.route ~> check {
+          status shouldEqual StatusCodes.NoContent
+        }
+
+        Get(s"/file-body/${utils.cat}") ~> f.route ~> check {
+          status shouldEqual StatusCodes.NotFound
+        }
       }
     }
   }
 
-  case class FixtureParam(
-      nestedDirectoryStructure: String,
-      textCreator: GraphCreator
-  )
-
   override protected def withFixture(test: OneArgTest): Outcome = {
-    val nestedDirectoryStructure: String = "src/test/Resources/TestData"
-    val testSource = "src/test/Resources/TestData/household"
-    val mockFileConsumer = mock[FileConsumer]
-    val textCreator = new GraphCreator(mockFileConsumer, testSource)
+    val GraphCreator =
+      new GraphCreator(LocalFileParser, utils.testingDirectory)
+    val altasRoute: RouteClient = new RouteClient(GraphCreator)
 
-    try {
-      this.withFixture(
-        test.toNoArgTest(
-          FixtureParam(
-            nestedDirectoryStructure: String,
-            textCreator: GraphCreator
-          )
-        )
+    super.withFixture(
+      test.toNoArgTest(
+        FixtureParam(altasRoute)
       )
-    }
+    )
+  }
+
+  case class FixtureParam(altasRoute: RouteClient) {
+    val route: Route = Route.seal(altasRoute.route)
   }
 }

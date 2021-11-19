@@ -1,44 +1,46 @@
 package NetGeneration
 
 import CommonModels.{Edge, FileBody, Graph}
-import FileIngestion.{FileConsumer, LocalFileConsumer}
-import NetGeneration.NodeIdentifier.{createNodePairs, findAllFileNodes}
+import FileIngestion.{FileParser, LocalFileParser}
+import NetGeneration.Tokenizer.{createNodePairs, findAllFileNodes}
 
 import java.io.{BufferedWriter, FileWriter}
 import scala.io.Source
 
-class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
+class GraphCreator(fileConsumer: FileParser, fileSource: String) {
 
   def createGraph: Graph = {
     val nodes: List[String] = findAllFileNodes(
       fileConsumer.getFiles(fileSource, List(".txt"))
     )
-    println(s"all of the nodes ${nodes}")
-    val edges: List[Edge] =
+    var edges: List[Edge] =
       EdgeIdentifier
         .createEdges(
           createNodePairs(
-            LocalFileConsumer.getFiles(fileSource, List(".txt"))
+            LocalFileParser.getFiles(fileSource, List(".txt"))
           )
         )
 
-    println(s"all of the edges ${edges}")
+    val stems: Seq[(String, String)] =
+      nodes.map(file => (Stemmer.stem(file), file))
 
-    Graph(nodes.distinct, edges)
+    val stemmedEdges: Seq[Edge] = stems.flatMap(pair =>
+      stems
+        .filter(otherPair => pair._1 == otherPair._1)
+        .map(otherPair => Edge(pair._2, otherPair._2))
+    )
+
+    Graph(nodes.distinct, edges ++ stemmedEdges)
   }
 
-
   def getFileBody(fileName: String): Option[FileBody] = {
-    println(s"GETING FILE BODY $fileName")
     val nameWithExtension = fileName + ".txt"
-    LocalFileConsumer
-      .getFiles("src/test/Resources/TestData", List(".txt"))
+    LocalFileParser
+      .getFiles(fileSource, List(".txt"))
       .find(file => {
-        println(s"CHECKING ${file.getName} AGAINST ${nameWithExtension}")
         file.getName == nameWithExtension
       })
       .map(file => {
-        println(s"FOUND ${file.getAbsolutePath}")
         val bufferFile = Source.fromFile(file)
         val stringFile = bufferFile.mkString
         bufferFile.close()
@@ -48,8 +50,8 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
 
   def updateFileBody(fileName: String, body: String): Graph = {
     val nameWithExtension = fileName + ".txt"
-    LocalFileConsumer
-      .getFiles("src/test/Resources/TestData", List(".txt"))
+    LocalFileParser
+      .getFiles(fileSource, List(".txt"))
       .find(_.getName == nameWithExtension) match {
       case Some(file) => {
         val bw = new BufferedWriter(new FileWriter(file))
@@ -59,7 +61,7 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
       case None => {
         val bw = new BufferedWriter(
           new FileWriter(
-            "src/test/Resources/TestData/household/" + nameWithExtension
+            fileSource + nameWithExtension
           )
         )
         bw.write(body)
@@ -71,11 +73,11 @@ class GraphCreator(fileConsumer: FileConsumer, fileSource: String) {
 
   def deleteFile(fileName: String) = {
     val nameWithExtension = fileName + ".txt"
-    LocalFileConsumer
-      .getFiles("src/test/Resources/TestData", List(".txt"))
+    LocalFileParser
+      .getFiles(fileSource, List(".txt"))
       .find(file => file.getName == nameWithExtension) match {
       case Some(file) => file.delete()
-      case None => false
+      case None       => false
     }
   }
 }

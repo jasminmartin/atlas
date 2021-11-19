@@ -1,5 +1,6 @@
 import dagre from 'dagre'
 import React, { useEffect, useState } from "react"
+
 import Modal from "./Modal"
 
 import Document from "./Document"
@@ -48,12 +49,17 @@ type GraphProps = {
 const Loading = () => <p>Loading...</p>
 
 export const Graph = ({ nodes, edges }: GraphProps) => {
-  console.log("Rendering Graph")
   const currentGraph = new dagre.graphlib.Graph();
-
+  
   buildGraph(currentGraph, nodes, edges);
-  const nodeWidth = 100
-  const nodePadding = 8
+
+  const [zoomFactor, setZoomFactor] = useState(1.0)
+  const [xOffset, setXOffSet] = useState(0)
+  const [yOffset, setYOffSet] = useState(0)
+
+
+  const nodeWidth = 100 * zoomFactor
+  const nodePadding = nodeWidth / 10
   const [lastClicked, setLastClicked] = useState<string | undefined>(undefined)
   const [fetch, setFetch] = useState<File | undefined>(undefined)
 
@@ -67,22 +73,22 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
       setFetch(await fetchFile(lastClicked))
     }
     f()
-  }, [lastClicked, fetch])
+  }, [lastClicked])
 
-  console.dir(fetch)
+
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <svg viewBox="0 0 1000 1000">
+      {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> */}
+        <svg viewBox="0 0 10000 10000" style={{width: 4000, height: 4000}} >
           {currentGraph.edges().map((edge) => {
             const fromNode = currentGraph.node(edge.v);
             const toNode = currentGraph.node(edge.w);
             return (
               <line
-                x1={fromNode.x}
-                y1={fromNode.y}
-                x2={toNode.x}
-                y2={toNode.y}
+                x1={(fromNode.x)}
+                y1={(fromNode.y)}
+                x2={(toNode.x)}
+                y2={(toNode.y )}
                 stroke="black"
               />
             );
@@ -93,27 +99,36 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
             .map((node) => (
               <>
                 <circle
-                  style={{ fill: "lavender" }}
-                  cx={node.x}
-                  cy={node.y}
+                  style={circleStyle}
+                  cx={(node.x)}
+                  cy={(node.y )}
                   r={nodeWidth / 2}>
                 </circle>
                 <foreignObject
                   onClick={() => setLastClicked(node.label)}
-                  x={node.x - (nodeWidth / 4)}
-                  y={node.y - (nodeWidth / 4)}
+                  x={(node.x) - (nodeWidth / 4)}
+                  y={(node.y ) - (nodeWidth / 4)}
                   width={nodeWidth / 2}
                   height={nodeWidth / 2}>
                   <div
                     onClick={() => setLastClicked(node.label)}
-                    title={node.label} style={{
+                     style={{
                       width: '100%',
                       height: '100%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      cursor: "pointer",
                     }}>
-                    <label>{node.label}</label>
+                    <label style={{
+                      cursor: "pointer",
+                      fontSize: `${zoomFactor * 60}%`,
+                      overflow:"hidden",
+                      whiteSpace:"nowrap",
+                      textOverflow:"ellipsis",
+                      textTransform: "capitalize"
+                    }}
+                    >{node.label}</label>
                   </div>
                 </foreignObject>
               </>
@@ -126,9 +141,22 @@ export const Graph = ({ nodes, edges }: GraphProps) => {
             }
           </Modal>
         )}
-      </div>
     </>
   );
 };
 
 export default Graph;
+
+const circleStyle = {
+  fill: "#00B2ED",
+  border: "none",
+  color: "white",
+  textAlign: "center" as const,
+  textDecoration: "none",
+  display: "flex",
+  fontSize: "16px",
+  cursor: "pointer",
+  margin: "4px 2px",
+  padding: "100px",
+  borderRadius: "50"
+};

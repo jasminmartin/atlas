@@ -1,6 +1,6 @@
 package Server
 
-import FileIngestion.LocalFileConsumer
+import FileIngestion.LocalFileParser
 import NetExposure.RouteClient
 import NetGeneration.GraphCreator
 import pureconfig.ConfigSource
@@ -11,10 +11,10 @@ import scala.concurrent.duration.Duration
 object Configuration extends ActorSystemConfig {
 
   case class ApplicationConfig(interface: String, port: Int, serverSetupTimeout: Duration)
-  case class ZetConfig(application: ApplicationConfig)
+  case class AtlasConfig(application: ApplicationConfig)
 
-  val appConfig: ZetConfig = ConfigSource.default.loadOrThrow[ZetConfig]
+  val appConfig: AtlasConfig = ConfigSource.default.loadOrThrow[AtlasConfig]
 
-  val graphCreator = new GraphCreator(LocalFileConsumer, "src/test/Resources/TestData")
+  val graphCreator = new GraphCreator(LocalFileParser, "src/test/Resources/Test/")
   val allRoutes = new RouteClient(graphCreator)
 }

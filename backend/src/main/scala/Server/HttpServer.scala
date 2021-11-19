@@ -16,7 +16,7 @@ object HttpServer extends App {
 
   Try(Await.result(bindingFuture, application.serverSetupTimeout)) match {
     case Success(bind) =>
-      logger.info(s"Zettelkasten is running on port: ${application.port}")
+      logger.info(s"Atlas is running on port: ${application.port}")
       sys.addShutdownHook {
         val hook = for {
           _ <- bind.unbind

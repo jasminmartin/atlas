@@ -7,7 +7,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class EdgeIdentifierSpec extends AnyWordSpec with Matchers {
 
   markup {
-    "the EdgeIdentifierSpec links related nodes"
+    "EdgeIdentifierSpec links related nodes"
   }
 
   "EdgeIdentifierSpec" when {
@@ -25,7 +25,7 @@ class EdgeIdentifierSpec extends AnyWordSpec with Matchers {
           ),
           FileAndTags(
             "swimming.txt",
-            List("goggl", "protein", "water")
+            List("goggles", "protein", "water")
           )
         )
 
@@ -36,7 +36,7 @@ class EdgeIdentifierSpec extends AnyWordSpec with Matchers {
             Edge("weightlifting.txt", "trainer"),
             Edge("weightlifting.txt", "protein"),
             Edge("weightlifting.txt", "strength"),
-            Edge("swimming.txt", "goggl"),
+            Edge("swimming.txt", "goggles"),
             Edge("swimming.txt", "protein"),
             Edge("swimming.txt", "water")
           )
