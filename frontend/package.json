@@ -14,7 +14,7 @@
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.8",
     "@types/react-fontawesome": "^1.6.4",
-    "d3": "^6.3.1",
+    "d3": "^7.6.1",
     "dagre": "^0.8.5",
     "prettier": "^2.2.1",
     "react": "^17.0.1",
